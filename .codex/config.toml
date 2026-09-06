@@ -1,0 +1,11 @@
+# Conservative project-local defaults. This file contains no credentials.
+# Codex loads project configuration only after the repository is trusted.
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+
+[shell_environment_policy]
+# Keep Codex's automatic filtering for variable names containing KEY,
+# SECRET, or TOKEN. Add explicit allowlists only when a project needs them.
+ignore_default_excludes = false

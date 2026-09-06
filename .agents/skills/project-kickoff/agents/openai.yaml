@@ -1,0 +1,3 @@
+interface:
+  display_name: "Project Kickoff"
+  short_description: "Turn an idea into a bounded, testable first slice"

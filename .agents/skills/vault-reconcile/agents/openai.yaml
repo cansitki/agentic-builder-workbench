@@ -1,0 +1,3 @@
+interface:
+  display_name: "Vault Reconcile"
+  short_description: "Keep TODO, project, daily, and durable notes consistent"

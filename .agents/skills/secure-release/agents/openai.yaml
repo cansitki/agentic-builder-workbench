@@ -1,0 +1,3 @@
+interface:
+  display_name: "Secure Release"
+  short_description: "Audit and verify a release before or after deployment"
