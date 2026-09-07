@@ -10,6 +10,8 @@ This map shows where the transferable operating system lives. Source-specific id
 | One canonical TODO and WIP rules | `templates/vault/To Do List.md`, `docs/task-system.md` |
 | Project scope and execution state | `templates/project/PROJECT.md`, `PLANS.md` |
 | Daily logs, link inbox, weekly review | `templates/vault/`, `docs/vault-workflow.md` |
+| Can Workbench operator surface | `docs/can-workbench.md`, `integrations/can-workbench/` |
+| Obsidian CLI safety | `docs/obsidian-cli-safety.md`, full personal `AGENTS.md` |
 | Vault indexes and atomic notes | `templates/vault/Vault Index.md`, research and decision templates |
 | Research modes and evidence | `docs/research-workflow.md` |
 | Coding/build/fix loop | `docs/operating-loop.md` |
@@ -21,7 +23,7 @@ This map shows where the transferable operating system lives. Source-specific id
 | Telegram bot structure | `docs/blueprints/telegram-bot.md` |
 | Crypto project structure | `docs/blueprints/crypto-project.md` |
 | Secrets and least privilege | `docs/security-model.md` |
-| Detailed credential intake | `docs/credential-intake.md`, `templates/security/` |
+| Functional encrypted credential intake | `tools/secenv/`, `integrations/can-workbench/`, `.agents/skills/secure-credential-intake/`, `docs/credential-intake.md` |
 | External sends/deploys/transactions | `docs/external-actions.md` |
 | Work vs runtime sessions | `docs/workspaces-and-sessions.md` |
 | Automations, hooks, MCP/connectors | `docs/automation-and-integrations.md`, `templates/automation/`, `templates/integrations/` |

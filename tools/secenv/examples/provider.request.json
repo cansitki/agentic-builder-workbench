@@ -1,0 +1,27 @@
+{
+  "description": "Provider/account: Example Provider, personal development account. Operation: read project metadata for demo-project. Environment: development. No writes, deployment, deletion, billing, user management, admin, signing, value transfer, or production. Revoke after 24 hours. The owner-only destination and exact consumer are shown below.",
+  "fields": [
+    {
+      "help": "Credential type: resource-scoped API token. Minimum permission: Project Metadata Read. Restrict to demo-project and development; restrict origin/IP if supported. Enables reads only; no writes, deploys, deletion, billing, users, admin, signing, value transfer, or production. Expire in 24 hours and revoke after evaluation. Destination is ~/.config/example-provider/example-provider.env; consumer is the local metadata checker.",
+      "label": "Example Provider API token",
+      "name": "EXAMPLE_API_TOKEN",
+      "provider_label": "Open official provider token page",
+      "provider_url": "https://example.com/account/tokens",
+      "required": true,
+      "type": "password"
+    }
+  ],
+  "id": "example-provider-readonly-development",
+  "outputs": [
+    {
+      "merge": true,
+      "mode": "0600",
+      "path": "~/.config/example-provider/example-provider.env",
+      "type": "env",
+      "vars": [
+        "EXAMPLE_API_TOKEN"
+      ]
+    }
+  ],
+  "title": "Example Provider development token for read-only project metadata"
+}

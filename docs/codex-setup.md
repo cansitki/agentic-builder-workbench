@@ -34,9 +34,12 @@ The included `.codex/config.toml` deliberately omits a model name so it does not
 - approval prompts on request;
 - workspace-write sandboxing;
 - cached web search;
-- automatic exclusion of common secret-like environment variables.
+- a core-only inherited shell environment;
+- automatic exclusion of `KEY`/`SECRET`/`TOKEN` names plus explicit password, passphrase, mnemonic, seed-phrase, and recovery-code filters.
 
 Project configuration loads only for repositories you trust. Personal defaults belong in `~/.codex/config.toml`; repository settings belong in `.codex/config.toml`.
+
+`templates/personal/codex.config.example.toml` provides the same conservative shell/secret boundary for a personal config, plus placeholders for an available model and theme. Never copy account tokens into it.
 
 Official reference: [Config basics](https://learn.chatgpt.com/docs/config-file/config-basic).
 
@@ -53,8 +56,10 @@ Repository skills live under `.agents/skills/<skill-name>/SKILL.md`. Their descr
 This repository includes:
 
 - `project-kickoff` for turning a fuzzy idea into a bounded project brief;
+- `secure-credential-intake` for the mandatory `secenv ask` + Can Workbench secret path;
 - `secure-release` for evidence-based pre-release review;
-- `vault-reconcile` for updating tasks and durable notes after work.
+- `vault-reconcile` for updating tasks and durable notes after work;
+- `workbench-onboarding` for touring the system and producing a personalized adoption plan.
 
 Official reference: [Build skills](https://learn.chatgpt.com/docs/build-skills).
 

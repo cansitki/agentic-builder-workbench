@@ -12,20 +12,23 @@ It intentionally contains no production credentials, personal notes, customer da
 - One canonical task list instead of scattered TODO files.
 - A vault structure for daily logs, durable notes, project hubs, decisions, and research.
 - A repeatable loop from idea → spec → implementation → verification → durable memory.
-- Safe Codex defaults and three small reusable skills.
+- Safe Codex defaults and five small reusable skills.
+- A functional `secenv ask` runtime plus verified Can Workbench installation for native encrypted credential intake.
 - General architecture blueprints for web apps, Telegram bots, and crypto projects.
 - A substantial vibe-coding security library with private-use terms.
 - A publication audit that rejects common secrets and source-specific private material.
 
 ## Start here
 
-1. Read [the Romanian quickstart](QUICKSTART.ro.md) or [the documentation map](docs/README.md).
-2. Complete [Customize First](docs/customize-first.md).
-3. Copy `templates/personal/AGENTS.md` into the directory that should govern your work.
-4. Copy `templates/project/` into a real project and replace every placeholder.
-5. Copy `templates/vault/` into a new or existing Obsidian vault.
-6. Read `knowledge/vibecoding-security/Vibecoding Security - START HERE.md` before shipping anything connected to users, money, private data, wallets, or production infrastructure.
-7. Run `bash scripts/audit-publication.sh` before committing or sharing changes.
+1. Read the [ten-minute system tour](TOUR.md), [Romanian quickstart](QUICKSTART.ro.md), [capability catalog](CAPABILITIES.md), [FAQ](FAQ.md), or [guided onboarding](ONBOARDING.md).
+2. Follow the [full installation sequence](INSTALL.md) when you are ready to adopt it.
+3. Complete [Customize First](docs/customize-first.md).
+4. Copy the complete `templates/personal/AGENTS.md` (or `AGENTS.minimal.md`) into the directory that should govern your work.
+5. Copy `templates/project/` into a real project and replace every placeholder.
+6. Copy `templates/vault/` into a new or existing Obsidian vault.
+7. Install and verify the secure credential path from `integrations/can-workbench/README.md`; do not provide credentials until it reports healthy.
+8. Read `knowledge/vibecoding-security/Vibecoding Security - START HERE.md` before shipping anything connected to users, money, private data, wallets, or production infrastructure.
+9. Run `bash scripts/verify-all.sh` before committing or sharing changes.
 
 Or copy a template without overwriting existing files:
 
@@ -59,6 +62,10 @@ The point is not to write the longest prompt. The point is to keep reliable cont
 ```text
 .
 ├── AGENTS.md                       Rules for maintaining this repository
+├── CAPABILITIES.md                  Questions and workflows the adopter can explore
+├── INSTALL.md                       Fail-closed full installation sequence
+├── ONBOARDING.md                    Guided non-secret setup interview
+├── TOUR.md                          End-to-end narrative of the full operating loop
 ├── .agents/skills/                 Reusable agent workflows
 ├── .codex/config.toml              Conservative project-local Codex defaults
 ├── docs/
@@ -73,6 +80,8 @@ The point is not to write the longest prompt. The point is to keep reliable cont
 │   ├── project/                    Project brief, plan, and AGENTS template
 │   └── vault/                      Obsidian task, log, research, and decision notes
 ├── knowledge/vibecoding-security/  Security playbook and atomic references
+├── tools/secenv/                   Ciphertext-only credential intake runtime
+├── integrations/can-workbench/    Native Obsidian modal setup and threat model
 └── scripts/audit-publication.sh    Local privacy and secret guard
 ```
 

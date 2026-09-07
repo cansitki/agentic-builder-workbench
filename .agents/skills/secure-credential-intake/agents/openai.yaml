@@ -1,0 +1,3 @@
+interface:
+  display_name: "Secure Credential Intake"
+  short_description: "Collect secrets only through the native encrypted modal"

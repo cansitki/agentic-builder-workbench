@@ -1,5 +1,7 @@
 # Documentation Map
 
+New adopter: start with the [System Tour](../TOUR.md), [Capabilities](../CAPABILITIES.md), [FAQ](../FAQ.md), [Guided Onboarding](../ONBOARDING.md), and [Full Installation](../INSTALL.md).
+
 ## Understand the system
 
 1. [System Map](system-map.md)
@@ -13,7 +15,10 @@
 
 - [Customize First](customize-first.md)
 - [Development Environment](development-environment.md)
+- [External Dependencies](external-dependencies.md)
 - [Codex Setup](codex-setup.md)
+- [Can Workbench](can-workbench.md)
+- [Obsidian CLI Safety](obsidian-cli-safety.md)
 - [Workspaces and Sessions](workspaces-and-sessions.md)
 - [Tool and Agent Routing](tool-routing.md)
 - [Automation and Integrations](automation-and-integrations.md)
@@ -40,5 +45,6 @@
 ## Audit coverage
 
 - [Structural Coverage Map](coverage-map.md)
+- [Transfer Completeness Matrix](completeness-matrix.md)
 - [Builder Methodology](<../knowledge/methodology/START HERE.md>)
 - [Vibecoding Security](<../knowledge/vibecoding-security/Vibecoding Security - START HERE.md>)

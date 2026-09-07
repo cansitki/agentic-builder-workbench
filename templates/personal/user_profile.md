@@ -13,6 +13,6 @@ Keep only stable preferences that improve collaboration. Do not turn this into s
 - Decision style: [PREFERENCE]
 - Safe assumptions the agent may make: [LIST]
 - Decisions that always need a question: [LIST]
-- Approved secret-intake mechanism: [NON-SECRET DESCRIPTION]
+- Approved secret-intake mechanism: `secenv ask` through the native Can Workbench modal only; no chat/terminal/browser fallback.
 - Accessibility needs: [OPTIONAL]
 - Last reviewed: [YYYY-MM-DD]

@@ -44,7 +44,7 @@ Remove commands that do not exist. Do not invent green checks.
 - Sensitive data classes: `[VALUE]`.
 - External side effects: `[PAYMENTS / EMAIL / MESSAGES / TRANSACTIONS / NONE]`.
 - Environments and deployment owner: `[VALUE]`.
-- Secrets stay in `[APPROVED SECRET STORE]`; never commit or print them.
+- Secrets stay in `[APPROVED SECRET STORE]`; values enter only through `secenv ask` and the native Can Workbench modal. Never request them in chat/terminal, commit, print, or log them. If the secure path is unavailable, stop and repair it.
 
 ## Change workflow
 

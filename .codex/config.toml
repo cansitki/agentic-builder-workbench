@@ -6,6 +6,14 @@ sandbox_mode = "workspace-write"
 web_search = "cached"
 
 [shell_environment_policy]
-# Keep Codex's automatic filtering for variable names containing KEY,
-# SECRET, or TOKEN. Add explicit allowlists only when a project needs them.
+# Start from a small core environment. Keep Codex's automatic filtering for
+# variable names containing KEY, SECRET, or TOKEN.
+inherit = "core"
 ignore_default_excludes = false
+
+[shell_environment_policy.filters]
+"*PASSWORD*" = "exclude"
+"*PASSPHRASE*" = "exclude"
+"*MNEMONIC*" = "exclude"
+"*SEED_PHRASE*" = "exclude"
+"*RECOVERY_CODE*" = "exclude"

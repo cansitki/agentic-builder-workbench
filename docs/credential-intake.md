@@ -1,6 +1,6 @@
 # Credential Intake
 
-The safest agent workflow never exposes the secret value to the conversation or general terminal history.
+This workbench has one approved credential value-entry path: `secenv ask` through the native Can Workbench modal. It never exposes the value to the conversation or general terminal history.
 
 ## Before requesting a credential
 
@@ -20,7 +20,7 @@ If the provider's permission model may have changed, verify current official doc
 
 ## Collection boundary
 
-Use an OS-native secure prompt, password manager, hardware device, or local secure intake utility that writes directly to the intended owner-only destination. The agent may initiate and wait for that mechanism but must not ask the user to paste the value into:
+The agent initiates `secenv ask`, keeps it running, and waits for submit, cancel, or expiry. Can Workbench shows the request metadata and destination before accepting values, encrypts them locally, and returns a ciphertext envelope. The agent must not ask the user to paste the value into:
 
 - chat or prompts;
 - shell arguments or `read` prompts;
@@ -29,7 +29,7 @@ Use an OS-native secure prompt, password manager, hardware device, or local secu
 - notes, screenshots, tickets, email, or messaging apps;
 - an agent-created web form.
 
-If the approved path is unavailable, repair it or stop credential-dependent work.
+If `secenv`, Can Workbench, its listener, or the native modal is unavailable, repair it or stop credential-dependent work. Password managers remain the long-term source, but copying a value from them into any other intake surface is forbidden.
 
 ## After collection
 
@@ -39,6 +39,14 @@ If the approved path is unavailable, repair it or stop credential-dependent work
 - Report scopes/target/status, not the secret.
 - Remove temporary request/submission artifacts.
 - Keep the destination ignored by Git and out of backups unless the backup is designed for secrets.
+
+## Consumption
+
+- Let the intended service/process read the owner-only destination directly.
+- If a one-off command must load an env file, source it inside the process invocation without echoing, shell tracing, debug dumps, or command interpolation of values.
+- Disable `set -x` and verbose request logging around authenticated operations.
+- Do not use `cat`, `env`, `printenv`, debugger inspection, or error reports to prove a value exists.
+- Prefer an authentication endpoint that returns identity/scope metadata without exposing the credential.
 
 ## Rotation
 

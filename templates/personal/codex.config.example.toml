@@ -1,0 +1,29 @@
+# Personal Codex defaults. Review current official documentation before use.
+# Do not put credentials or provider tokens in this file.
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+model_reasoning_effort = "high"
+
+# Set a model only after confirming it is available to the account/workspace.
+# model = "[CURRENT AVAILABLE MODEL]"
+
+[shell_environment_policy]
+inherit = "core"
+ignore_default_excludes = false
+
+[shell_environment_policy.filters]
+"*PASSWORD*" = "exclude"
+"*PASSPHRASE*" = "exclude"
+"*MNEMONIC*" = "exclude"
+"*SEED_PHRASE*" = "exclude"
+"*RECOVERY_CODE*" = "exclude"
+
+[tui]
+theme = "[THEME NAME]"
+
+# Trust only repositories you have inspected. Project-local config, hooks,
+# and rules are ignored for untrusted repositories.
+# [projects."/absolute/path/to/project"]
+# trust_level = "trusted"

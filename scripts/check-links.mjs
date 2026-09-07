@@ -5,12 +5,24 @@ import { dirname, extname, join, normalize, relative, resolve } from "node:path"
 
 const root = resolve(new URL("..", import.meta.url).pathname);
 const markdownFiles = [];
+const ignoredDirectories = new Set([
+  ".git",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".ruff_cache",
+  ".venv",
+  "__pycache__",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+]);
 
 async function walk(directory) {
   for (const entry of await readdir(directory)) {
-    if (entry === ".git") continue;
     const path = join(directory, entry);
     const info = await stat(path);
+    if (info.isDirectory() && ignoredDirectories.has(entry)) continue;
     if (info.isDirectory()) await walk(path);
     else if (extname(entry).toLowerCase() === ".md") markdownFiles.push(path);
   }
@@ -18,7 +30,7 @@ async function walk(directory) {
 
 await walk(root);
 
-const knowledgeRoot = join(root, "knowledge", "vibecoding-security");
+const knowledgeRoot = join(root, "knowledge");
 const knowledgeFiles = markdownFiles.filter((file) => file.startsWith(`${knowledgeRoot}/`));
 const knowledgeNames = new Set(
   knowledgeFiles.map((file) => relative(knowledgeRoot, file).replace(/\.md$/i, "")),
