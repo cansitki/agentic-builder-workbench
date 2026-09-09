@@ -50,4 +50,24 @@ const create=(Ve,Qr,As,read)=>new Function('Ve','Qr','As','Rr','Ye','wbReadSecre
             (root/'folder').mkdir();(root/'folder/To Do List.md').write_text('duplicate')
             with self.assertRaises(ValueError):vault.run(root,'read',{'file':'To Do List'})
 
+
+class PluginConfigurationTests(unittest.TestCase):
+    def test_core_workspaces_and_phase_routing_preserve_settings(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);plugin=root/'.obsidian/plugins/workbench';plugin.mkdir(parents=True)
+            (plugin/'manifest.json').write_text('{}')
+            (plugin/'data.json').write_text('{"custom":"preserved"}')
+            core=root/'.obsidian/core-plugins.json';core.write_text('{"workspaces":false,"daily-notes":false,"graph":false}')
+            for phase in ['local','remote','sync']:
+                command=['python3',str(ROOT/'scripts/configure-workbench.py'),str(root),'--phase',phase,'--app-closed']
+                if phase!='local':command+=['--coder-username','fixture-user']
+                subprocess.run(command,check=True,capture_output=True)
+            data=json.loads((plugin/'data.json').read_text());self.assertEqual(data['custom'],'preserved')
+            self.assertEqual(data['secureInput']['workspace'],'system')
+            flags=json.loads(core.read_text());self.assertTrue(flags['workspaces']);self.assertTrue(flags['daily-notes']);self.assertFalse(flags['graph'])
+            before=(plugin/'data.json').read_text()
+            (root/'.obsidian/community-plugins.json').write_text('["can-workbench"]')
+            result=subprocess.run(['python3',str(ROOT/'scripts/configure-workbench.py'),str(root),'--phase','local','--app-closed'],capture_output=True)
+            self.assertNotEqual(result.returncode,0);self.assertEqual((plugin/'data.json').read_text(),before)
+
 if __name__=='__main__':unittest.main()

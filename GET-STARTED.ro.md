@@ -38,7 +38,8 @@ ce lipsește dacă o etapă nu poate fi verificată.
 | Cont și acces Codex | Tu te autentifici; agentul verifică instalarea |
 | Acces GitHub la repo-ul privat | Tu accepți accesul și autentificarea; agentul clonează |
 | Obsidian Desktop | Agentul instalează/configurează pe sistemul compatibil |
-| Workbench, inclusiv Workspace | Inclus în repo; agentul instalează pluginul |
+| Workbench, inclusiv modulul Workspace | Inclus în repo; agentul instalează pluginul |
+| Workspaces, pluginul de bază Obsidian | Salvează aranjarea panourilor; agentul îl activează în Obsidian |
 | Node, Python, Git, SSH și uneltele auxiliare | Agentul verifică și instalează ce lipsește |
 | VPS Ubuntu 24.04 dedicat | Alegi providerul/bugetul și îl autorizezi; agentul configurează serverul accesibil |
 | Domeniu administrat în Cloudflare | Alegi domeniul și contul; agentul configurează Tunnel/DNS după aprobare |

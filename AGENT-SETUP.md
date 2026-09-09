@@ -57,7 +57,11 @@ is needed to install local files.
 5. Open Obsidian. Verify the Workbench listener is listening on `local-bootstrap`.
 6. Run the dummy request from `integrations/workbench/README.md`; verify the native
    modal, destination mode and cancellation. No real provider token is used yet.
-7. Set Daily notes to the chosen folder and enable the official Obsidian CLI if
+7. Verify Obsidian Core **Workspaces** is enabled (saved UI layouts), alongside
+   Workbench’s own Workspace module (projects/terminals). The configuration helper
+   enables Workspaces and Daily notes when the native core settings file exists;
+   if absent, enable them through the app instead of writing a partial defaults file.
+   Set Daily notes to the chosen folder and enable the official Obsidian CLI if
    available. Verify actual note read/write, rather than assuming the binary exists.
 
 ## 2. Prepare a concrete installation plan
@@ -170,6 +174,10 @@ python3 infra/workbench.py ssh-config --bundle /private/new-installation --apply
 Review an existing SSH config before applying its Coder block; preserve unrelated
 hosts. The plugin's alias is `main.<workspace>.<username>.coder`. The matching Coder
 config uses suffix **coder**, not username.coder. The template's agent is **main**.
+
+For a compound remote command, use one correctly quoted command string or the
+configured OpenSSH alias: the pinned `coder ssh` joins its remote arguments with
+spaces. Do not pass an unquoted `sh -c` payload as if it preserved argument boundaries.
 
 Verify both workspaces with the real CLI and SSH. In each: Git, Node, Python, Codex,
 secenv doctor and tmux must work. Home is `/workspace`; projects are

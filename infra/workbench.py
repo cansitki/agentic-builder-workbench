@@ -45,12 +45,14 @@ def save_json(path, data, *, replace=False):
 
 def read_private(path):
     path = Path(path)
-    st = path.lstat()
-    if not stat.S_ISREG(st.st_mode) or st.st_uid != os.getuid() or stat.S_IMODE(st.st_mode) != 0o600:
-        raise SetupError('Credential must be an owned regular file with mode 0600: '+path.name)
-    if st.st_size > 65536:
-        raise SetupError('Credential file is unexpectedly large')
-    return path.read_text()
+    try:fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
+    except OSError as error:raise SetupError("Credential file cannot be opened safely") from error
+    with os.fdopen(fd,'r') as stream:
+        st=os.fstat(stream.fileno())
+        if not stat.S_ISREG(st.st_mode) or st.st_uid != os.getuid() or stat.S_IMODE(st.st_mode) != 0o600:
+            raise SetupError('Credential must be an owned regular file with mode 0600: '+path.name)
+        if st.st_size > 65536:raise SetupError('Credential file is unexpectedly large')
+        return stream.read()
 
 def credential(path, name):
     for line in read_private(path).splitlines():

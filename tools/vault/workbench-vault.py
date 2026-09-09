@@ -80,7 +80,8 @@ def main():
         if not sep or key in options:parser.error('Expected unique key=value arguments')
         options[key]=item
     lockdir=Path.home()/'.cache/workbench';lockdir.mkdir(parents=True,exist_ok=True,mode=0o700)
-    with (lockdir/'vault.lock').open('w') as lock:
+    fd=os.open(lockdir/'vault.lock',os.O_RDWR|os.O_CREAT|os.O_NOFOLLOW,0o600)
+    with os.fdopen(fd,'r+') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
         try:print(run(args.vault,args.command,options))
         except (ValueError,OSError) as error:parser.exit(1,str(error)+'\n')

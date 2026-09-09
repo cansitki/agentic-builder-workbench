@@ -11,6 +11,7 @@ import time
 ROOT=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('wb',ROOT/'infra/workbench.py');w=importlib.util.module_from_spec(spec);spec.loader.exec_module(w)
 def run(command,env=None):
+    print("check:"," ".join(command[:3]),flush=True)
     result=subprocess.run(command,env=env,stdin=subprocess.DEVNULL,capture_output=True,text=True)
     if result.returncode:raise RuntimeError('Command failed: '+' '.join(command[:3])+'; output withheld to protect runtime credentials')
     return result.stdout
@@ -53,10 +54,11 @@ def main():
             for name in ['ops-main','system']:
                 created.append(name);run(cli+['create',name,'--template','workbench','--use-parameter-defaults','--yes'],env)
                 run(cli+['ssh',name,'--','tmux','-V'],env)
-            run(cli+['ssh','ops-main','--','sh','-c',"printf persisted > /workspace/smoke-marker; printf shared > /vault/smoke-shared"],env)
+            run(cli+['ssh','ops-main','--',"printf '%s' persisted > /workspace/smoke-marker && printf '%s' shared > /vault/smoke-shared"],env)
+            run(cli+['ssh','ops-main','--','test "$(cat /workspace/smoke-marker)" = persisted'],env)
             assert run(cli+['ssh','system','--','cat','/vault/smoke-shared'],env).strip()=='shared'
             run(cli+['stop','ops-main','--yes'],env);run(cli+['start','ops-main','--yes'],env)
-            assert run(cli+['ssh','ops-main','--','cat','/workspace/smoke-marker'],env).strip()=='persisted'
+            run(cli+['ssh','ops-main','--','test "$(cat /workspace/smoke-marker)" = persisted'],env)
             print(json.dumps({'status':'pass','coder':version,'workspaces':created,'ssh':True,'shared_vault':True,'stop_start_persistence':True,'cloudflare_live':False,'sync_account_live':False}))
         finally:
             if env:

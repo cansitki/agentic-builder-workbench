@@ -22,6 +22,8 @@ def main():
     parser.add_argument('--coder-username')
     parser.add_argument('--app-closed',action='store_true',required=True)
     args=parser.parse_args();vault=args.vault.expanduser().resolve()
+    for relative in ['.obsidian/plugins/workbench/data.json','.obsidian/community-plugins.json','.obsidian/core-plugins.json','.obsidian/daily-notes.json']:
+        if (vault/relative).is_symlink():raise SystemExit('Refusing a symbolic-link configuration file')
     directory=vault/'.obsidian/plugins/workbench'
     if not (directory/'manifest.json').is_file():raise SystemExit('Install Workbench first')
     file=directory/'data.json'
@@ -48,7 +50,21 @@ def main():
     plugins=json.loads(community.read_text()) if community.exists() else []
     if 'can-workbench' in plugins:raise SystemExit('Disable/migrate legacy plugin before enabling Workbench')
     if 'workbench' not in plugins:plugins.append('workbench')
+    core_path=vault/'.obsidian/core-plugins.json'
+    core=None
+    if args.phase=='local' and core_path.exists():
+        if core_path.is_symlink():raise SystemExit('Refusing symlink core-plugin settings')
+        core=json.loads(core_path.read_text())
+        if isinstance(core,dict):
+            core['workspaces']=True;core['daily-notes']=True
+        elif isinstance(core,list) and all(isinstance(item,str) for item in core):
+            for name in ['workspaces','daily-notes']:
+                if name not in core:core.append(name)
+        else:raise SystemExit('Unknown core-plugin settings format; configure through Obsidian UI')
     write(file,settings)
     write(community,plugins)
+    if core is not None:write(core_path,core)
+    daily=vault/'.obsidian/daily-notes.json'
+    if args.phase=='local' and not daily.exists():write(daily,{'folder':'daily notes','format':'YYYY-MM-DD'})
     print(json.dumps({'status':'configured','phase':args.phase,'secure_input_workspace':selected,'next':'open Obsidian and verify listener with dummy data'}))
 if __name__=='__main__':main()

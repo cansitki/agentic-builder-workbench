@@ -8,7 +8,8 @@ pluginul, skill-urile, secenv și sistemul de lucru.**
 | Componentă | Rol | Configurare |
 |---|---|---|
 | Remote Connections | Alege mașina terminalului: Local, SSH sau Coder | Conexiuni proprii, identificator unic, username Coder unde este cazul |
-| Workspace | Grupează proiectele, sesiunile, statusul și fișierele | Proiecte, directoare și categorii; cele manuale au prioritate |
+| Workspaces (core Obsidian) | Salvează și restaurează aranjarea panourilor din Obsidian | Se activează în Core plugins |
+| Workspace (Workbench) | Grupează proiectele, sesiunile, statusul și fișierele | Proiecte, directoare și categorii; cele manuale au prioritate |
 | Terminal | Shell și Codex în Obsidian, cu taburi, copy și integrare tmux | Shell, tmux și conexiunea proiectului |
 | Upload / enhancements | Trimite imagini și fișiere în workspace-ul terminalului | Upload directory absolut per conexiune; fără țintă ghicită |
 | Countdown Bar | Afișează timpul rămas până la datele alese | Titlu și dată; nu programează execuția taskurilor |
