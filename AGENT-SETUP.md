@@ -180,8 +180,8 @@ configured OpenSSH alias: the pinned `coder ssh` joins its remote arguments with
 spaces. Do not pass an unquoted `sh -c` payload as if it preserved argument boundaries.
 
 Verify both workspaces with the real CLI and SSH. In each: Git, Node, Python, Codex,
-secenv doctor and tmux must work. The personal template is bound to the verified owner ID before publication, so
-other Coder users cannot use it to mount the owner’s shared vault/auth volumes.
+secenv doctor and tmux must work. Private volume mounts are bound to the verified owner ID before publication.
+Preview jobs and other Coder users receive no private vault/auth mounts.
 This is not a multi-tenant template. Home is `/workspace`; projects are
 `/workspace/projects`. There is no host Docker socket inside workspaces. Write a
 dummy marker, stop/start the workspace, and verify it persists. Never delete a

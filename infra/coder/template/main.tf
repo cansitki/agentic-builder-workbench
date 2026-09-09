@@ -55,23 +55,20 @@ resource "docker_container" "workspace" {
     label = "workbench.managed"
     value = "true"
   }
-  volumes {
-    volume_name    = "workbench-vault"
-    container_path = "/vault"
-    read_only      = false
+  dynamic "volumes" {
+    for_each = var.owner_id == data.coder_workspace_owner.me.id ? [1] : []
+    content {
+      volume_name    = "workbench-vault"
+      container_path = "/vault"
+      read_only      = false
+    }
   }
   dynamic "volumes" {
-    for_each = data.coder_workspace.me.name == "system" ? [1] : []
+    for_each = data.coder_workspace.me.name == "system" && var.owner_id == data.coder_workspace_owner.me.id ? [1] : []
     content {
       volume_name    = "workbench-sync-config"
       container_path = "/workspace/.config/obsidian-headless"
       read_only      = false
-    }
-  }
-  lifecycle {
-    precondition {
-      condition     = var.owner_id == data.coder_workspace_owner.me.id
-      error_message = "This personal template is restricted to the verified installation owner."
     }
   }
   networks_advanced { name = "workbench-network" }
