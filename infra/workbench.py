@@ -297,7 +297,7 @@ def coder_cli(bundle,operation):
         result=subprocess.run(command,env=env,stdin=subprocess.DEVNULL,capture_output=True,text=True)
         if result.returncode:raise SetupError('Coder CLI operation failed; reconcile redacted state before retrying')
     if operation=='login':
-        run(['coder','login',env['CODER_URL']])
+        run(['coder','login',env['CODER_URL'],'--use-token-as-session'])
     elif operation=='ssh-config':
         run(['coder','config-ssh','--hostname-suffix','coder','--ssh-host-prefix','','--yes'])
     else:

@@ -57,7 +57,7 @@ def main():
             run(cli+['ssh','ops-main','--',"printf '%s' persisted > /workspace/smoke-marker && printf '%s' shared > /vault/smoke-shared"],env)
             run(cli+['ssh','ops-main','--','test "$(cat /workspace/smoke-marker)" = persisted'],env)
             assert run(cli+['ssh','system','--','cat','/vault/smoke-shared'],env).strip()=='shared'
-            run(cli+['login','http://127.0.0.1:7080'],env)
+            run(cli+['login','http://127.0.0.1:7080','--use-token-as-session'],env)
             ssh_config=base/'ssh-config'
             run(cli+['config-ssh','--hostname-suffix','coder','--ssh-host-prefix','','--ssh-config-file',str(ssh_config),'--yes'],env)
             plain_env=os.environ.copy();plain_env.pop('CODER_SESSION_TOKEN',None);plain_env.pop('CODER_URL',None)

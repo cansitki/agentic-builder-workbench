@@ -171,6 +171,9 @@ python3 infra/workbench.py workspaces --bundle /private/new-installation --apply
 python3 infra/workbench.py ssh-config --bundle /private/new-installation --apply
 ```
 
+The login helper uses the private session environment and the pinned CLI’s
+`--use-token-as-session` flag; it never invokes a token-paste prompt.
+
 Review an existing SSH config before applying its Coder block; preserve unrelated
 hosts. The plugin's alias is `main.<workspace>.<username>.coder`. The matching Coder
 config uses suffix **coder**, not username.coder. The template's agent is **main**.
