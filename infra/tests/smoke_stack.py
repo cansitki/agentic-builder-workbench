@@ -57,9 +57,14 @@ def main():
             run(cli+['ssh','ops-main','--',"printf '%s' persisted > /workspace/smoke-marker && printf '%s' shared > /vault/smoke-shared"],env)
             run(cli+['ssh','ops-main','--','test "$(cat /workspace/smoke-marker)" = persisted'],env)
             assert run(cli+['ssh','system','--','cat','/vault/smoke-shared'],env).strip()=='shared'
+            run(cli+['login','http://127.0.0.1:7080'],env)
+            ssh_config=base/'ssh-config'
+            run(cli+['config-ssh','--hostname-suffix','coder','--ssh-host-prefix','','--ssh-config-file',str(ssh_config),'--yes'],env)
+            plain_env=os.environ.copy();plain_env.pop('CODER_SESSION_TOKEN',None);plain_env.pop('CODER_URL',None)
+            assert run(['ssh','-F',str(ssh_config),'-o','BatchMode=yes','main.ops-main.ci-owner.coder','printf alias-ok'],plain_env).strip()=='alias-ok'
             run(cli+['stop','ops-main','--yes'],env);run(cli+['start','ops-main','--yes'],env)
             run(cli+['ssh','ops-main','--','test "$(cat /workspace/smoke-marker)" = persisted'],env)
-            print(json.dumps({'status':'pass','coder':version,'workspaces':created,'ssh':True,'shared_vault':True,'stop_start_persistence':True,'cloudflare_live':False,'sync_account_live':False}))
+            print(json.dumps({'status':'pass','coder':version,'workspaces':created,'ssh':True,'native_ssh_alias':True,'shared_vault':True,'stop_start_persistence':True,'cloudflare_live':False,'sync_account_live':False}))
         finally:
             if env:
                 for name in reversed(created):
