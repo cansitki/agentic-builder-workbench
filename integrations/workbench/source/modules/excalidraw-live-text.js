@@ -1,5 +1,5 @@
 /*
- * Excalidraw Live Text module — runs inside can-workbench.
+ * Excalidraw Live Text module — runs inside workbench.
  *
  * @from(NoteName) and @from(NoteName#Heading) tag syncing — fetches note
  * content and updates Excalidraw text elements in-place.

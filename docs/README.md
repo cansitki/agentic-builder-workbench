@@ -17,7 +17,7 @@ New adopter: start with the [System Tour](../TOUR.md), [Capabilities](../CAPABIL
 - [Development Environment](development-environment.md)
 - [External Dependencies](external-dependencies.md)
 - [Codex Setup](codex-setup.md)
-- [Can Workbench](can-workbench.md)
+- [Workbench](workbench.md)
 - [Obsidian CLI Safety](obsidian-cli-safety.md)
 - [Workspaces and Sessions](workspaces-and-sessions.md)
 - [Tool and Agent Routing](tool-routing.md)

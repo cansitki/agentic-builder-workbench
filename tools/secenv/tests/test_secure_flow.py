@@ -452,7 +452,7 @@ class SecureFlowTest(unittest.TestCase):
                 generate_private_key(key)
                 request = self._valid_request(home / "service.env")
                 request["id"] = "expired-crash-residue"
-                request["channel"] = "can-workbench"
+                request["channel"] = "workbench"
                 request["expires_at"] = (
                     datetime.now(timezone.utc) - timedelta(seconds=1)
                 ).isoformat()

@@ -41,7 +41,7 @@ Use $workbench-onboarding. Read TOUR.md, first give me a five-minute tour of the
 - Actions the agent may do locally.
 - Actions needing exact approval.
 - Development/staging/production boundaries.
-- Secret manager and Can Workbench secure-input readiness.
+- Secret manager and Workbench secure-input readiness.
 - Messaging, deployment, spending, signing, and deletion limits.
 
 The interview must never ask for a credential value, seed phrase, private endpoint secret, or recovery material.

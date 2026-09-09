@@ -13,7 +13,7 @@ from .crypto import public_jwk_from_private_key
 from .paths import cancellations_dir, requests_dir, submissions_dir
 from .schema import load_request
 
-WORKBENCH_CHANNEL = "can-workbench"
+WORKBENCH_CHANNEL = "workbench"
 MAX_SUBMISSION_BYTES = 512 * 1024
 REQUEST_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 BASE64URL_RE = re.compile(r"^[A-Za-z0-9_-]+$")

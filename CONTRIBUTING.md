@@ -11,4 +11,4 @@ This is a private collaboration repository.
 
 A change that weakens a security gate must include the explicit reason, risk, and replacement control.
 
-Never request a repository/provider credential in an issue or pull request. Use the reviewed `secenv ask` + Can Workbench flow after the operation and minimum permissions are defined.
+Never request a repository/provider credential in an issue or pull request. Use the reviewed `secenv ask` + Workbench flow after the operation and minimum permissions are defined.

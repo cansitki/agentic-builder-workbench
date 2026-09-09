@@ -48,12 +48,12 @@ Reading a task list does not authorize unrelated work.
 
 ## Security
 
-- The only approved way to receive a secret value is `secenv ask` through the native Can Workbench modal. This applies to every agent, project, workspace, provider, environment, urgency, and credential type.
+- The only approved way to receive a secret value is `secenv ask` through the native Workbench modal. This applies to every agent, project, workspace, provider, environment, urgency, and credential type.
 - Never request, accept, or instruct the user to paste a token, password, private key, seed phrase, client secret, recovery code, passphrase, one-time link, or other secret into chat, a prompt, terminal/tmux input or scrollback, shell arguments, source/config edits, notes, screenshots, logs, issues, email, messaging apps, or an agent-created browser form/link.
 - Before opening every modal, specify per field: provider and owning account/org/project/tenant; exact name/type; exact consuming operation; current minimum permissions; exact resource restrictions; environment and host/origin/IP restrictions; read/write/deploy/delete/billing/user/admin/production/signing/value-transfer capability; lifetime/revocation; owner-only destination; and consumer.
 - Run `secenv doctor`, then `secenv ask --schema [REVIEWED_SCHEMA]`. Keep it running until submit/cancel/expiry. Accept only redacted state and paths.
-- Use masked password fields for secrets. Workbench v2.2.0 textarea is visible; multiline secrets require a reviewed masked/file-input extension, not a fallback channel.
-- If `secenv`, Can Workbench, its listener, or the native modal is unavailable, stop credential-dependent work and repair this path. There is no chat, terminal, browser-link, or later fallback.
+- Use masked password fields for secrets. Workbench v3.0.0 textarea is visible; multiline secrets require a reviewed masked/file-input extension, not a fallback channel.
+- If `secenv`, Workbench, its listener, or the native modal is unavailable, stop credential-dependent work and repair this path. There is no chat, terminal, browser-link, or later fallback.
 - If a secret appears outside the modal, do not use or repeat it. Treat it as exposed, require rotation, and restart intake through `secenv ask`.
 - Use least privilege, short lifetimes, resource restrictions, and separate credentials per environment.
 - Secure collection does not authorize the operation that consumes the credential.

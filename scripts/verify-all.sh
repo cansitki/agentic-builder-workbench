@@ -6,11 +6,12 @@ cd "$repo_root"
 
 bash scripts/audit-publication.sh
 python3 scripts/verify-workbench-source.py
-python3 integrations/can-workbench/source/build.py --check
-node --check integrations/can-workbench/source/main.js
-node integrations/can-workbench/source/scripts/verify-secure-input.js
+python3 integrations/workbench/source/build.py --check
+node --check integrations/workbench/source/main.js
+node integrations/workbench/source/scripts/verify-secure-input.js
+node integrations/workbench/source/scripts/verify-portable-defaults.js
 python3 scripts/test-workbench-offline.py
-bash -n scripts/audit-publication.sh scripts/install-can-workbench.sh scripts/install-secenv.sh scripts/test-bootstrap.sh scripts/test-installers.sh scripts/verify-all.sh
+bash -n scripts/audit-publication.sh scripts/install-workbench.sh scripts/install-secenv.sh scripts/test-bootstrap.sh scripts/test-installers.sh scripts/verify-all.sh
 node --check scripts/bootstrap.mjs
 node --check scripts/check-adopted-brain.mjs
 node --check scripts/check-links.mjs

@@ -1,6 +1,6 @@
-# Can Workbench
+# Workbench
 
-Can Workbench turns Obsidian Desktop into the operator surface for this system. It is desktop-only and combines knowledge, remote workspaces, terminal sessions, project navigation, files, diagrams, and secure credential requests.
+Workbench turns Obsidian Desktop into the operator surface for this system. It is desktop-only and combines knowledge, remote workspaces, terminal sessions, project navigation, files, diagrams, and secure credential requests.
 
 ## Included surfaces
 
@@ -12,11 +12,11 @@ Can Workbench turns Obsidian Desktop into the operator surface for this system. 
 - Excalidraw live-text support.
 - Native encrypted secure-input modal.
 
-The private repository installs the verified public [v2.2.0 release](https://github.com/cansitki/can-workbench/releases/tag/v2.2.0), source commit `e09d8a0b8e2af60405aa05b4477850f88f8dd995`, by pinned SHA-256 from the included source snapshot (see `integrations/can-workbench/SOURCE.md`); it never copies local `data.json`, workspace names, connection routes, tokens, PEM files, or settings.
+The private repository ships Workbench 3.0.0 as a reviewed derivative with included source and pinned hashes. It starts with no configured Coder user or workspace. See `integrations/workbench/SOURCE.md` for provenance and `integrations/workbench/MIGRATION.md` for installation.
 
 ## Source/build rule
 
-`main.js` is generated. In Can Workbench development, edit `modules/*.js` and the declared vendor sources, then run `python3 build.py`. Shared top-level imports belong in the build header. Never patch the generated bundle as the canonical source.
+`main.js` is generated. In Workbench development, edit `modules/*.js` and the declared vendor sources, then run `python3 build.py`. Shared top-level imports belong in the build header. Never patch the generated bundle as the canonical source.
 
 ## Session behavior
 
@@ -30,7 +30,7 @@ The private repository installs the verified public [v2.2.0 release](https://git
 
 The plugin maintains one listener for the explicitly selected workspace. A `secenv ask` request opens a modal showing origin, workspace, field help, variable names, and destination paths. Values are encrypted with WebCrypto before transport; cancel/dismiss sends no secret and ends the request.
 
-See `integrations/can-workbench/README.md` for installation and verification.
+See `integrations/workbench/README.md` for installation and verification.
 
 ## Configuration boundary
 

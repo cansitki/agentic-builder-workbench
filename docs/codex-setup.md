@@ -56,7 +56,7 @@ Repository skills live under `.agents/skills/<skill-name>/SKILL.md`. Their descr
 This repository includes:
 
 - `project-kickoff` for turning a fuzzy idea into a bounded project brief;
-- `secure-credential-intake` for the mandatory `secenv ask` + Can Workbench secret path;
+- `secure-credential-intake` for the mandatory `secenv ask` + Workbench secret path;
 - `secure-release` for evidence-based pre-release review;
 - `vault-reconcile` for updating tasks and durable notes after work;
 - `workbench-onboarding` for touring the system and producing a personalized adoption plan.

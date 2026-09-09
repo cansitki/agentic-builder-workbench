@@ -13,17 +13,20 @@ It intentionally contains no production credentials, personal notes, customer da
 - A vault structure for daily logs, durable notes, project hubs, decisions, and research.
 - A repeatable loop from idea → spec → implementation → verification → durable memory.
 - Safe Codex defaults and eight reusable skills.
-- A functional `secenv ask` runtime plus verified Can Workbench installation for native encrypted credential intake.
+- A functional `secenv ask` runtime plus verified Workbench installation for native encrypted credential intake.
 - General architecture blueprints for web apps, Telegram bots, and crypto projects.
 - A substantial vibe-coding security library with private-use terms.
 - A publication audit that rejects common secrets and source-specific private material.
 
 ## Start here
 
+See [what every component does](COMPONENTS.ro.md) and [migration to Workbench](integrations/workbench/MIGRATION.md).
+The [3.0.0 audit](AUDIT.ro.md) lists fixes, executed checks, and target-environment limits.
+
 For the full operator inventory and transfer receipt, read
 [START-HERE.ro.md](START-HERE.ro.md), [SKILLS.ro.md](SKILLS.ro.md), and
-[PARITY.ro.md](PARITY.ro.md). The exact reviewed plugin source and release assets
-are included under `integrations/can-workbench/source/`.
+[PARITY.ro.md](PARITY.ro.md). The reviewed Workbench 3.0.0 plugin source and release assets
+are included under `integrations/workbench/source/`.
 
 1. Read the [ten-minute system tour](TOUR.md), [Romanian quickstart](QUICKSTART.ro.md), [capability catalog](CAPABILITIES.md), [FAQ](FAQ.md), or [guided onboarding](ONBOARDING.md).
 2. Follow the [full installation sequence](INSTALL.md) when you are ready to adopt it.
@@ -31,7 +34,7 @@ are included under `integrations/can-workbench/source/`.
 4. Copy the complete `templates/personal/AGENTS.md` (or `AGENTS.minimal.md`) into the directory that should govern your work.
 5. Copy `templates/project/` into a real project and replace every placeholder.
 6. Copy `templates/vault/` into a new or existing Obsidian vault.
-7. Install and verify the secure credential path from `integrations/can-workbench/README.md`; do not provide credentials until it reports healthy.
+7. Install and verify the secure credential path from `integrations/workbench/README.md`; do not provide credentials until it reports healthy.
 8. Read `knowledge/vibecoding-security/Vibecoding Security - START HERE.md` before shipping anything connected to users, money, private data, wallets, or production infrastructure.
 9. Run `bash scripts/verify-all.sh` before committing or sharing changes.
 
@@ -86,7 +89,7 @@ The point is not to write the longest prompt. The point is to keep reliable cont
 │   └── vault/                      Obsidian task, log, research, and decision notes
 ├── knowledge/vibecoding-security/  Security playbook and atomic references
 ├── tools/secenv/                   Ciphertext-only credential intake runtime
-├── integrations/can-workbench/    Native Obsidian modal setup and threat model
+├── integrations/workbench/    Native Obsidian modal setup and threat model
 └── scripts/audit-publication.sh    Local privacy and secret guard
 ```
 

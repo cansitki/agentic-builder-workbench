@@ -29,6 +29,6 @@ node scripts/bootstrap.mjs project /cale/către/proiect
 
 ## Regula de securitate
 
-Nu pune parole, tokenuri, seed phrases, chei private sau linkuri de recovery în chat, prompturi, terminal/tmux, repo, loguri ori note. În acest sistem, singurul canal permis este `secenv ask` prin modalul nativ Can Workbench. Dacă modalul/listenerul nu funcționează, agentul se oprește și repară ruta; nu folosește link, browser sau „doar de data asta”. Vezi `integrations/can-workbench/README.md`.
+Nu pune parole, tokenuri, seed phrases, chei private sau linkuri de recovery în chat, prompturi, terminal/tmux, repo, loguri ori note. În acest sistem, singurul canal permis este `secenv ask` prin modalul nativ Workbench. Dacă modalul/listenerul nu funcționează, agentul se oprește și repară ruta; nu folosește link, browser sau „doar de data asta”. Vezi `integrations/workbench/README.md`.
 
 Pentru boți Telegram și proiecte crypto găsești numai arhitectură generală în `docs/blueprints/`; nu există cod, conturi sau logică operațională importată din alte sisteme.

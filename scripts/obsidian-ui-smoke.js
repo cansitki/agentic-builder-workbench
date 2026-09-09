@@ -1,0 +1,46 @@
+// Executed only by test-obsidian-ui.py against isolated native forms.
+(async () => {
+  const api = window.__workbenchUiTestApi;
+  const fs = require('fs');
+  const base = WORKBENCH_TEST_SOURCE;
+  const record = {exports:{}};
+  const source = fs.readFileSync(base + 'orchestrator.js', 'utf8');
+  const classes = new Function('module','Plugin','PluginSettingTab','Setting','Notice', source + '\nreturn {Workbench,WorkbenchSettingTab};')(record,api.Plugin,api.PluginSettingTab,api.Setting,api.Notice);
+  const plugin = new classes.Workbench(app,{id:'workbench-ui-fixture',name:'Workbench',version:'3.0.0'});
+  let saves = 0;
+  plugin.settings = {};
+  plugin.saveData = async () => {saves++;};
+  plugin.saveSettings = async () => {saves++;};
+  await plugin._ensureDefaults();
+  if (plugin.settings.gsd.coderUser !== '' || plugin.settings.gsd.workspaces.length !== 0) throw new Error('Fresh defaults not empty');
+  plugin.settings.gsd.workspaces.push({type:'local',coderName:'fixture',displayName:'Fixture',projects:[]});
+  plugin.modules={gsd:{settings:plugin.settings.gsd}};
+  const secureRecord={exports:{}};
+  new Function('module','Modal','Notice',fs.readFileSync(base+'secure-input.js','utf8'))(secureRecord,api.Modal,api.Notice);
+  const secure = new secureRecord.exports(plugin);
+  secure.settings=plugin.settings.secureInput={enabled:false,workspace:''};
+  secure.restart=()=>{secure.status=secure.settings.enabled?'fixture-enabled':'disabled';};
+  plugin.modules.secureInput=secure;
+  const tab = new classes.WorkbenchSettingTab(app,plugin);
+  tab.containerEl=document.createElement('div');
+  tab.display();
+  if (!tab.containerEl.textContent.includes('Secure Input')) throw new Error('Secure Input missing from sidebar');
+  tab._currentPage='connections';tab.display();
+  const row=[...tab.containerEl.querySelectorAll('.setting-item')].find(r=>r.querySelector('.setting-item-name')?.textContent==='Coder username');
+  if (!row || row.querySelector('input')?.value !== '') throw new Error('Coder username is not empty in native UI');
+  const input=row.querySelector('input');input.value='chosen-operator';input.dispatchEvent(new Event('input',{bubbles:true}));
+  await new Promise(r=>setTimeout(r,10));
+  if(plugin.settings.gsd.coderUser!=='chosen-operator') throw new Error('Username UI did not save user choice');
+  tab._currentPage='secure-input';tab.display();
+  let select=tab.containerEl.querySelector('select');
+  if(!select || select.value!=='') throw new Error('Secure Input selector absent or preselected');
+  select.value='fixture';select.dispatchEvent(new Event('change',{bubbles:true}));
+  await new Promise(r=>setTimeout(r,10));
+  if(secure.settings.workspace!=='fixture') throw new Error('Workspace UI did not configure listener');
+  const toggle=tab.containerEl.querySelector('.checkbox-container');
+  if(!toggle)throw new Error('Secure Input toggle missing');
+  toggle.dispatchEvent(new Event("change",{bubbles:true}));await new Promise(r=>setTimeout(r,10));
+  if(!secure.settings.enabled || secure.status!=='fixture-enabled')throw new Error('Enable UI did not configure listener');
+  tab.containerEl.remove();
+  return JSON.stringify({status:'pass',nativeObsidianForms:true,usernameInitiallyEmpty:true,usernameChangeSaved:true,workspaceSelectorAndEnable:true,liveConnectionsStarted:0,liveSettingsChanged:0});
+})()

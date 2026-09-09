@@ -1,4 +1,4 @@
-// All 5 modules are always loaded — no opt-out. Per-module settings live
+// All 6 modules load together; the secure listener is separately enabled. Settings live
 // under named keys and are initialized lazily by each module.
 const DEFAULT_SETTINGS = {
   vmConnect: {},
@@ -9,36 +9,36 @@ const DEFAULT_SETTINGS = {
 // __TerminalPluginClass and __GSDPluginClass are declared in the HEADER,
 // assigned by their vendor IIFEs above this orchestrator section.
 
-class CanWorkbench extends Plugin {
+class Workbench extends Plugin {
   async onload() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() || {});
-    await this._ensureCanDefaults();
+    await this._ensureDefaults();
     this.modules = {};
     this.loadOrder = [];
 
-    // All modules always load. No feature toggles.
+    // Modules load together; connections and the secure listener need explicit setup.
     await this._loadModule('vmConnect', new VMConnectModule(this));
     await this._loadModule('countdown', new CountdownModule(this));
     await this._loadModule('excalidrawLiveText', new ExcalidrawLiveTextModule(this));
 
     if (!__TerminalPluginClass) {
-      console.error('[can-workbench] __TerminalPluginClass is null — IIFE did not assign it');
-      new Notice('Can Workbench: Terminal vendor not captured — see console');
+      console.error('[workbench] __TerminalPluginClass is null — IIFE did not assign it');
+      new Notice('Workbench: Terminal vendor not captured — see console');
     } else {
       await this._loadVendor('terminal', __TerminalPluginClass, 'internetvin-terminal', 'Terminal');
     }
     if (!__GSDPluginClass) {
-      console.error('[can-workbench] __GSDPluginClass is null — IIFE did not assign it');
-      new Notice('Can Workbench: workspace module not captured — see console');
+      console.error('[workbench] __GSDPluginClass is null — IIFE did not assign it');
+      new Notice('Workbench: workspace module not captured — see console');
     } else {
       await this._loadVendor('gsd', __GSDPluginClass, 'gsd-control', 'Workspace');
     }
 
     // Load after Workspace so the secure broker can reuse the normalized
-    // Coder/SSH connection settings and open one listener for ops-main.
+    // Coder/SSH connection settings and open one listener for the selected workspace.
     await this._loadModule('secureInput', new SecureInputModule(this));
 
-    this.addSettingTab(new CanWorkbenchSettingTab(this.app, this));
+    this.addSettingTab(new WorkbenchSettingTab(this.app, this));
 
     // Augment the GSD file explorer with file operations (context menu +
     // toolbar buttons). Hooks run against existing leaves plus any new ones.
@@ -49,14 +49,14 @@ class CanWorkbench extends Plugin {
     // and the user doesn't need faster feedback.
     this.registerInterval(window.setInterval(() => this._syncSessionRenames(), 2000));
 
-    console.log('[can-workbench] loaded', this.loadOrder);
+    console.log('[workbench] loaded', this.loadOrder);
   }
 
-  async _ensureCanDefaults() {
+  async _ensureDefaults() {
     let dirty = false;
     const gsd = this.settings.gsd = this.settings.gsd || {};
-    if (!gsd.coderUser) {
-      gsd.coderUser = 'cansitki';
+    if (typeof gsd.coderUser !== 'string') {
+      gsd.coderUser = '';
       dirty = true;
     }
     if (!Array.isArray(gsd.workspaces)) {
@@ -77,19 +77,6 @@ class CanWorkbench extends Plugin {
     }
     if (!gsd.terminalSessionCategorySources || typeof gsd.terminalSessionCategorySources !== 'object' || Array.isArray(gsd.terminalSessionCategorySources)) {
       gsd.terminalSessionCategorySources = {};
-      dirty = true;
-    }
-    const hasPrimaryCoderWorkspace = gsd.workspaces.some(ws => {
-      if (!ws || (ws.type && ws.type !== 'coder')) return false;
-      return ws.coderName === 'ops-main' || ws.coderName === 'main';
-    });
-    if (!hasPrimaryCoderWorkspace) {
-      gsd.workspaces.unshift({
-        coderName: 'ops-main',
-        displayName: 'ops-main',
-        type: 'coder',
-        projects: []
-      });
       dirty = true;
     }
     if (dirty) {
@@ -245,8 +232,8 @@ class CanWorkbench extends Plugin {
       this.modules[key] = instance;
       this.loadOrder.push(key);
     } catch (e) {
-      console.error(`[can-workbench] failed to load module ${key}:`, e);
-      new Notice(`Can Workbench: ${key} failed — see console`);
+      console.error(`[workbench] failed to load module ${key}:`, e);
+      new Notice(`Workbench: ${key} failed — see console`);
     }
   }
 
@@ -263,7 +250,7 @@ class CanWorkbench extends Plugin {
       const instance = new VendorClass(this.app, vendorManifest);
 
       // Intercept loadData/saveData so vendor settings live under a nested
-      // key in can-workbench's data.json — avoids clobbering the main plugin's
+      // key in workbench's data.json — avoids clobbering the main plugin's
       // data and keeps everything in one file.
       const parent = this;
       instance.loadData = async function () {
@@ -275,8 +262,8 @@ class CanWorkbench extends Plugin {
       };
 
       // Suppress the vendor plugin's own settings tab. Everything is
-      // managed from the single "Can Workbench" tab. Without this, GSD
-      // would register a "Can Workbench" tab (with the wrong workspace
+      // managed from the single "Workbench" tab. Without this, GSD
+      // would register a "Workbench" tab (with the wrong workspace
       // fields for VM entries) and the user would have two places to
       // edit the same data.
       instance.addSettingTab = function () { /* suppressed */ };
@@ -336,7 +323,7 @@ class CanWorkbench extends Plugin {
               try {
                 existing = await workbench._listRemoteTmuxSessions(ws);
               } catch (err) {
-                console.warn('[can-workbench] tmux ls failed, defaulting to short name:', err.message);
+                console.warn('[workbench] tmux ls failed, defaulting to short name:', err.message);
               }
               effectiveSessionName = workbench._nextTmuxSessionName(shortName, existing);
               effectiveCreateNew = true;
@@ -392,7 +379,7 @@ class CanWorkbench extends Plugin {
             setTimeout(markNewSession, 150);
             setTimeout(markNewSession, 750);
           } catch (e) {
-            console.warn('[can-workbench] failed to mark Coder session:', e);
+            console.warn('[workbench] failed to mark Coder session:', e);
           }
           return result;
         };
@@ -401,9 +388,9 @@ class CanWorkbench extends Plugin {
       this.modules[key] = instance;
       this.loadOrder.push(key);
     } catch (e) {
-      console.error(`[can-workbench] failed to load vendor ${key}:`, e);
-      console.error(`[can-workbench] stack:`, e && e.stack);
-      new Notice(`Can Workbench: ${displayName} failed — see console`);
+      console.error(`[workbench] failed to load vendor ${key}:`, e);
+      console.error(`[workbench] stack:`, e && e.stack);
+      new Notice(`Workbench: ${displayName} failed — see console`);
     }
   }
 
@@ -463,7 +450,7 @@ class CanWorkbench extends Plugin {
       : '~';
 
     if (!ws.sshHost) {
-      new Notice(`${ws.displayName || ws.coderName}: SSH host not configured — edit in Settings → Can Workbench`);
+      new Notice(`${ws.displayName || ws.coderName}: SSH host not configured — edit in Settings → Workbench`);
       return;
     }
 
@@ -661,7 +648,7 @@ class CanWorkbench extends Plugin {
           // First time we see this session, just record its name — don't
           // touch settings. We only persist subsequent changes.
           if (session.__cwLastKnownName === undefined) {
-            console.log('[can-workbench] tracking session for rename:', {
+            console.log('[workbench] tracking session for rename:', {
               name: session.name,
               ws: session.__cwWorkspace,
               project: session.__cwProject
@@ -672,13 +659,13 @@ class CanWorkbench extends Plugin {
 
           if (session.name === session.__cwLastKnownName) continue;
 
-          console.log('[can-workbench] rename detected:', session.__cwLastKnownName, '→', session.name);
+          console.log('[workbench] rename detected:', session.__cwLastKnownName, '→', session.name);
 
           // Renamed — persist to the originating project.
           const ws = this._getGsdWorkspaces(gsd.settings)
             .find(w => w.coderName === session.__cwWorkspace);
           if (!ws) {
-            console.warn('[can-workbench] rename: workspace not found:', session.__cwWorkspace);
+            console.warn('[workbench] rename: workspace not found:', session.__cwWorkspace);
             session.__cwLastKnownName = session.name;
             continue;
           }
@@ -686,12 +673,12 @@ class CanWorkbench extends Plugin {
           const proj = (ws.projects || [])
             .find(p => p.path === session.__cwProject);
           if (!proj) {
-            console.warn('[can-workbench] rename: project not found:', session.__cwProject, 'in', ws.coderName, '(projects:', (ws.projects || []).map(p => p.path), ')');
+            console.warn('[workbench] rename: project not found:', session.__cwProject, 'in', ws.coderName, '(projects:', (ws.projects || []).map(p => p.path), ')');
             session.__cwLastKnownName = session.name;
             continue;
           }
 
-          console.log('[can-workbench] persisting rename:', proj.displayName, '→', session.name, '(ws:', ws.coderName, ')');
+          console.log('[workbench] persisting rename:', proj.displayName, '→', session.name, '(ws:', ws.coderName, ')');
           proj.displayName = session.name;
           const newName = session.name;
           const oldTmux = session.__cwTmuxName;
@@ -711,15 +698,15 @@ class CanWorkbench extends Plugin {
                   if (this._moveRememberedTerminalSessionCategory(gsd.settings, session.__cwWorkspace, oldTmux, newTmux)) {
                     const gsdInstance = this.modules && this.modules.gsd;
                     if (gsdInstance && typeof gsdInstance.saveData === 'function') {
-                      gsdInstance.saveData(gsdInstance.settings).catch(err => console.error('[can-workbench] save tmux category map failed:', err));
+                      gsdInstance.saveData(gsdInstance.settings).catch(err => console.error('[workbench] save tmux category map failed:', err));
                     } else {
-                      this.saveData(this.settings).catch(err => console.error('[can-workbench] save tmux category map failed:', err));
+                      this.saveData(this.settings).catch(err => console.error('[workbench] save tmux category map failed:', err));
                     }
                   }
                   session.__cwTmuxName = newTmux;
-                  console.log('[can-workbench] remote tmux renamed:', oldTmux, '→', newTmux);
+                  console.log('[workbench] remote tmux renamed:', oldTmux, '→', newTmux);
                 })
-                .catch(err => console.warn('[can-workbench] remote tmux rename failed:', err.message));
+                .catch(err => console.warn('[workbench] remote tmux rename failed:', err.message));
             }
           }
         }
@@ -727,21 +714,21 @@ class CanWorkbench extends Plugin {
 
       if (dirty) {
         // Persist through GSD's saveData path — it updates both
-        // parent.settings.gsd and can-workbench's data.json, keeping
+        // parent.settings.gsd and workbench's data.json, keeping
         // the shared reference consistent.
         const gsdInstance = this.modules && this.modules.gsd;
         if (gsdInstance && typeof gsdInstance.saveData === 'function') {
           gsdInstance.saveData(gsdInstance.settings)
-            .then(() => console.log('[can-workbench] rename saved'))
-            .catch(err => console.error('[can-workbench] save rename failed:', err));
+            .then(() => console.log('[workbench] rename saved'))
+            .catch(err => console.error('[workbench] save rename failed:', err));
         } else {
           this.saveData(this.settings)
-            .then(() => console.log('[can-workbench] rename saved (fallback path)'))
-            .catch(err => console.error('[can-workbench] save rename failed:', err));
+            .then(() => console.log('[workbench] rename saved (fallback path)'))
+            .catch(err => console.error('[workbench] save rename failed:', err));
         }
       }
     } catch (e) {
-      console.error('[can-workbench] _syncSessionRenames error:', e);
+      console.error('[workbench] _syncSessionRenames error:', e);
     }
   }
 
@@ -1104,7 +1091,7 @@ class CanWorkbench extends Plugin {
       view.addAction('folder-plus', 'New folder',  () => this._explorerNewFolder(view));
       view.addAction('upload',      'Upload file', () => this._explorerUpload(view));
     } catch (e) {
-      console.error('[can-workbench] addAction failed:', e);
+      console.error('[workbench] addAction failed:', e);
     }
 
     const handler = (evt) => {
@@ -1515,7 +1502,7 @@ class CanWorkbench extends Plugin {
     // Coder workspace
     const gsd = this.modules && this.modules.gsd;
     const coderUser = this._getGsdCoderUser(gsd && gsd.settings);
-    if (!coderUser) throw new Error('Coder username not set (see Can Workbench settings)');
+    if (!coderUser) throw new Error('Coder username not set (see Workbench settings)');
     return [`main.${ws.coderName}.${coderUser}.coder`, ''];
   }
 
@@ -1629,7 +1616,7 @@ class CanWorkbench extends Plugin {
   }
 
   async onunload() {
-    console.log('[can-workbench] unloading in reverse order:', [...this.loadOrder].reverse());
+    console.log('[workbench] unloading in reverse order:', [...this.loadOrder].reverse());
     for (const key of [...this.loadOrder].reverse()) {
       const mod = this.modules[key];
       if (!mod) continue;
@@ -1643,7 +1630,7 @@ class CanWorkbench extends Plugin {
           await mod.onunload();
         }
       } catch (e) {
-        console.error(`[can-workbench] error unloading ${key}:`, e);
+        console.error(`[workbench] error unloading ${key}:`, e);
       }
     }
     this.modules = {};
@@ -1655,7 +1642,7 @@ class CanWorkbench extends Plugin {
   }
 }
 
-class CanWorkbenchSettingTab extends PluginSettingTab {
+class WorkbenchSettingTab extends PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;
@@ -1678,6 +1665,7 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
     const pages = [
       { key: 'about',       title: 'About',               render: (el) => this._renderAbout(el) },
       { key: 'connections', title: 'Remote Connections',  render: (el) => this._renderConnectionsPage(el) },
+      { key: 'secure-input', title: 'Secure Input', render: (el) => this._renderSecureInputPage(el) },
       { key: 'gsd',         title: 'Workspace',           render: (el) => this._renderGsdPage(el) },
       { key: 'countdown',   title: 'Countdown Bar',       render: (el) => this._renderCountdownPage(el) },
       { key: 'excalidraw',  title: 'Excalidraw Live Text',render: (el) => this._renderExcalidrawPage(el) },
@@ -1695,7 +1683,7 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
     sidebar.style.background = 'var(--background-secondary)';
 
     const titleEl = sidebar.createDiv();
-    titleEl.setText('Can Workbench');
+    titleEl.setText('Workbench');
     titleEl.style.fontSize = '11px';
     titleEl.style.fontWeight = '600';
     titleEl.style.textTransform = 'uppercase';
@@ -1753,11 +1741,11 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
   // =========================================================================
 
   _renderAbout(el) {
-    el.createEl('h2', { text: 'Can Workbench' });
+    el.createEl('h2', { text: 'Workbench' });
     el.createEl('p', {
-      text: 'A unified Obsidian plugin that bundles five tools: remote connections ' +
+      text: 'A unified Obsidian plugin that bundles six components: remote connections ' +
             '(Coder / SSH / local), an embedded terminal, a floating countdown widget, ' +
-            'Excalidraw live text sync, and workspace management.'
+            'Excalidraw live text sync, workspace management, and encrypted credential input.'
     });
 
     const hr = el.createEl('hr');
@@ -1775,6 +1763,7 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
       ['Countdown Bar', 'A draggable floating widget showing days/hours until configured dates.'],
       ['Excalidraw Live Text', 'Sync note content into Excalidraw text elements via @from() tags.'],
       ['Workspace Views', 'Project dashboard, status view, and folder scanning for workspace projects.'],
+      ['Secure Input', 'A native encrypted credential modal for one explicitly selected workspace.'],
     ];
     for (const [name, desc] of items) {
       const li = list.createEl('li');
@@ -1785,8 +1774,43 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
 
     el.createEl('p', {
       cls: 'setting-item-description',
-      text: 'All modules are always active. Use the sidebar to configure or learn about each one.'
+      text: 'Components are loaded together. Connections require your own configuration; Secure Input starts disabled.'
     });
+  }
+
+  _renderSecureInputPage(el) {
+    el.createEl('h2', { text: 'Secure Input' });
+    el.createEl('p', { text: 'Receive credential requests from secenv in one selected workspace. Enter values only in the native request modal; they are encrypted before transport.' });
+    const module = this.plugin.modules.secureInput;
+    if (!module) {
+      el.createEl('p', { text: 'Secure Input could not load. Reload Workbench and inspect its error before providing any credential.' });
+      return;
+    }
+    const apply = async change => {
+      try { await module.configure(change); }
+      catch (error) { new Notice(error.message); }
+      this.display();
+    };
+    new Setting(el).setName('Enable credential listener')
+      .setDesc('Requires an explicitly selected workspace with secenv installed. No automatic fallback.')
+      .addToggle(toggle => toggle.setValue(module.settings.enabled)
+        .onChange(value => apply({ enabled: value })));
+    new Setting(el).setName('Credential workspace')
+      .setDesc('Uses the connection identifier. Finish or cancel pending requests before switching.')
+      .addDropdown(dropdown => {
+        dropdown.addOption('', 'Select a workspace');
+        const workspaces = this.plugin._getGsdWorkspaces(module._gsdSettings());
+        for (const workspace of workspaces) {
+          if (workspace.coderName) dropdown.addOption(workspace.coderName, workspace.displayName || workspace.coderName);
+        }
+        if (module.settings.workspace && !workspaces.some(w => w.coderName === module.settings.workspace)) {
+          dropdown.addOption(module.settings.workspace, 'Unavailable: ' + module.settings.workspace);
+        }
+        dropdown.setValue(module.settings.workspace).onChange(value => apply({ workspace: value }));
+      });
+    new Setting(el).setName('Listener status').setDesc(module.status)
+      .addButton(button => button.setButtonText('Refresh').onClick(() => this.display()))
+      .addButton(button => button.setButtonText('Restart').onClick(() => { module.restart(); this.display(); }));
   }
 
   _renderConnectionsPage(el) {
@@ -1802,7 +1826,7 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
   _renderGsdPage(el) {
     el.createEl('h2', { text: 'Workspace' });
     el.createEl('p', {
-      text: 'Can Workbench tracks projects, sessions, and workspace state. ' +
+      text: 'Workbench tracks projects, sessions, and workspace state. ' +
             'It scans folders in your vault (or on a configured workspace) for initialized ' +
             'projects and surfaces them in a dashboard, a status view, and a file explorer.'
     });
@@ -1977,10 +2001,10 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
       p.appendText('.');
     }
 
-    el.createEl('h3', { text: 'Can Workbench' });
+    el.createEl('h3', { text: 'Workbench' });
     el.createEl('p', {
       text: 'The bundled workspace views track projects, milestones, and sessions. ' +
-            'The Can Workbench module has local modifications — the connection picker has been ' +
+            'The Workbench module has local modifications — the connection picker has been ' +
             'reworked to support SSH and Local connections alongside Coder workspaces.'
     });
 
@@ -2297,7 +2321,7 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
         .setName('Display name')
         .setDesc('Shown in the workspace picker.')
         .addText(txt => txt
-          .setPlaceholder(t === 'ssh' ? 'AWS VM' : 'ore')
+          .setPlaceholder(t === 'ssh' ? 'Remote server' : 'My workspace')
           .setValue(ws.displayName || '')
           .onChange(async v => {
             ws.displayName = v.trim();
@@ -2327,6 +2351,24 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
             if (!ws.displayName) title.setText(ws.coderName || '(unnamed)');
             await saveAll();
           }));
+
+      if (t !== 'local') {
+        new Setting(wrap)
+          .setName('Upload directory')
+          .setDesc('Absolute directory on this remote workspace for pasted images and dropped files. Configure before uploading; no user path is assumed.')
+          .addText(txt => txt
+            .setPlaceholder('/absolute/path/to/uploads')
+            .setValue(ws.uploadDir || '')
+            .onChange(async v => {
+              const value = v.trim();
+              if (value && (!value.startsWith('/') || /[\x00-\x1f\x7f]/.test(value))) {
+                new Notice('Use an absolute remote directory without control characters.');
+                return;
+              }
+              ws.uploadDir = value;
+              await saveAll();
+            }));
+      }
 
       // --- Type-specific fields ---
       if (t === 'ssh') {
@@ -2735,4 +2777,4 @@ class CanWorkbenchSettingTab extends PluginSettingTab {
   }
 }
 
-module.exports = CanWorkbench;
+module.exports = Workbench;

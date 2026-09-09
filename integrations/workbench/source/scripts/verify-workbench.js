@@ -66,8 +66,7 @@ function assertVmConnectUsesNestedSettingsHelpers() {
     const source = readFileSync(file, "utf8");
     for (const required of [
       "this.plugin._getGsdWorkspaces(gsdSettings)",
-      "this.plugin._getGsdCoderUser(gsdSettings)",
-      "this.plugin._getGsdWorkspaces(gsdVendor?.settings)"
+      "this.plugin._getGsdCoderUser(gsdSettings)"
     ]) {
       if (!source.includes(required)) {
         throw new Error(`${file} does not consistently use nested GSD settings helpers; missing ${required}`);
@@ -107,13 +106,12 @@ function assertDefaultWorkspaceScopeSource() {
 function assertSystemTmuxScopeSource() {
   process.stdout.write("check: system tmux scope source invariant\n");
   const required = [
-    "#{@nomarh_scope}",
+    "#{@workbench_scope}",
     "const [name, attached, scope] = line.split(\"|||\");",
     "scope: String(scope || \"\").trim().toLowerCase()",
     "getSystemSessionInfo(sessionName, scope = \"\")",
     "normalizedScope === \"system\"",
     "name.startsWith(\"sys-\")",
-    "[\"can-ops-refresh-loop\", \"Nomarh operations refresh\"]",
     "[\"obsidian-headless\", \"Obsidian background runtime\"]",
     "[\"ttyd\", \"Workspace tmux web terminal\"]",
     "this.getSystemSessionInfo(session.name, session.scope)"
@@ -124,7 +122,7 @@ function assertSystemTmuxScopeSource() {
     if (missing.length) {
       throw new Error(`${file} does not classify tmux system scope safely; missing ${missing.join(", ")}`);
     }
-    const scopeFormatCount = (source.match(/#\{@nomarh_scope\}/g) || []).length;
+    const scopeFormatCount = (source.match(/#\{@workbench_scope\}/g) || []).length;
     if (scopeFormatCount < 2) {
       throw new Error(`${file} does not read tmux system scope from both local and remote inventories`);
     }
@@ -164,8 +162,8 @@ function assertHiddenTerminalRenderGuardSource() {
   const required = [
     "this.isVisible = false;",
     "this.installVisibilityRenderGuard();",
-    "selectionService.__canWorkbenchVisibilityGuard",
-    "selectionService.__canWorkbenchDeferredRefresh = true;",
+    "selectionService.__workbenchVisibilityGuard",
+    "selectionService.__workbenchDeferredRefresh = true;",
     "renderService.handleSelectionChanged = (...args) =>",
     "renderService._renderRows = (...args) =>",
     "renderService._needsFullRefresh = true;",
@@ -188,7 +186,6 @@ function assertSystemTmuxPolicyBehavior() {
   const cases = [
     ["anything", "system", true],
     ["sys-smoke-server", "", true],
-    ["can-ops-refresh-loop", "", true],
     ["obsidian-headless", "", true],
     ["ttyd", "", true],
     ["salad-orch-v3", "", true],
@@ -230,7 +227,6 @@ function assertSystemTmuxPolicyBehavior() {
     const sessions = [
       { name: "scoped-worker", scope: "system", workspace: "ops-main" },
       { name: "sys-probe", scope: "", workspace: "ops-main" },
-      { name: "can-ops-refresh-loop", scope: "", workspace: "ops-main" },
       { name: "main", scope: "", workspace: "ops-main" },
       { name: "payment-service", scope: "", workspace: "ops-main" }
     ];
@@ -417,12 +413,11 @@ const runtimeSmoke = String.raw`
   const rawTmuxCount = () => {
     try {
       const legacySystemNames = new Set([
-        "can-ops-refresh-loop", "claudeclaw", "claudeclaw-main", "bot", "discord-bot",
         "novnc", "no-vnc", "obsidian-headless", "openclaw", "openclaw-gateway",
         "obsidian-vnc", "salad-orch-v3", "salad-orch-v3-tunnel", "ttyd",
         "websockify", "x11vnc", "vault-github-backup", "vault-backup"
       ]);
-      return cp.execFileSync("tmux", ["list-sessions", "-F", "#{session_name}|||#{@nomarh_scope}"], {encoding:"utf8"})
+      return cp.execFileSync("tmux", ["list-sessions", "-F", "#{session_name}|||#{@workbench_scope}"], {encoding:"utf8"})
         .split("\n")
         .filter(Boolean)
         .map(line=>line.split("|||"))
@@ -502,7 +497,7 @@ const runtimeSmoke = String.raw`
     const ctrlShiftReturned = handler(makeEvent({ctrlKey:true, shiftKey:true}));
     const ctrlReturned = handler(makeEvent({ctrlKey:true}));
     const normalSelect = selectionService?.shouldForceSelection?.({button:0, altKey:false, ctrlKey:false, metaKey:false}) === true;
-    const patchInstalled = selectionService?.__canWorkbenchNormalSelection === true;
+    const patchInstalled = selectionService?.__workbenchNormalSelection === true;
     terminal.hasSelection = originalHasSelection;
     terminal.getSelection = originalGetSelection;
     copierOwner.copyTerminalSelection = originalCopy;
@@ -524,12 +519,12 @@ const runtimeSmoke = String.raw`
   let createdStatusLeaf = null;
   try {
     closeModals();
-    if (app.plugins.plugins["can-workbench"]) await app.plugins.unloadPlugin("can-workbench");
-    await app.plugins.loadPlugin("can-workbench");
-    const loaded = !!app.plugins.plugins["can-workbench"];
-    const enabled = Array.from(app.plugins.enabledPlugins || []).includes("can-workbench");
-    if (!loaded || !enabled) throw new Error("can-workbench did not reload cleanly");
-    gsdSettings = app.plugins.plugins["can-workbench"]?.modules?.gsd?.settings || null;
+    if (app.plugins.plugins["workbench"]) await app.plugins.unloadPlugin("workbench");
+    await app.plugins.loadPlugin("workbench");
+    const loaded = !!app.plugins.plugins["workbench"];
+    const enabled = Array.from(app.plugins.enabledPlugins || []).includes("workbench");
+    if (!loaded || !enabled) throw new Error("workbench did not reload cleanly");
+    gsdSettings = app.plugins.plugins["workbench"]?.modules?.gsd?.settings || null;
     if (Array.isArray(gsdSettings?.workspaces)) originalWorkspaces = gsdSettings.workspaces.slice();
     originalCoderUser = gsdSettings?.coderUser || "";
     if (gsdSettings && Object.prototype.hasOwnProperty.call(gsdSettings, "gsd")) {
@@ -857,7 +852,7 @@ const runtimeSmoke = String.raw`
           coderName:"cw-unreachable-verify",
           displayName:"Unreachable verify",
           type:"ssh",
-          sshHost:"can-workbench-unreachable.invalid",
+          sshHost:"workbench-unreachable.invalid",
           projects:[]
         }
       ];
@@ -932,7 +927,7 @@ const runtimeSmoke = String.raw`
         status:{available:false, reason:"not checked"}
       };
       closeModals();
-      const uploadResolver = app.plugins.plugins["can-workbench"]?.modules?.vmConnect;
+      const uploadResolver = app.plugins.plugins["workbench"]?.modules?.vmConnect;
       if (uploadResolver?.resolveUploadTargetForSession) {
         const workspaceForUpload = originalWorkspaces[0];
         const markedTarget = uploadResolver.resolveUploadTargetForSession({
@@ -941,6 +936,7 @@ const runtimeSmoke = String.raw`
         });
         const namedTarget = uploadResolver.resolveUploadTarget(workspaceForUpload?.displayName || workspaceForUpload?.coderName || "");
         nestedFallback.upload = {
+          configuredDir: workspaceForUpload?.uploadDir || "",
           available:true,
           workspace:workspaceForUpload?.coderName || "",
           coderUser:gsdSettings.gsd?.coderUser || gsdSettings.coderUser || "",
@@ -962,7 +958,7 @@ const runtimeSmoke = String.raw`
       const explorerView = createdExplorerLeaf.view;
       const explorerRows = [...createdExplorerLeaf.view?.containerEl?.querySelectorAll(".gsd-explorer-list-row") || []].map(row=>row.textContent.trim());
       const explorerEmpty = createdExplorerLeaf.view?.containerEl?.querySelector(".gsd-explorer-list-empty")?.textContent || "";
-      const workbenchPlugin = app.plugins.plugins["can-workbench"];
+      const workbenchPlugin = app.plugins.plugins["workbench"];
       const explorerWorkspaceName = originalWorkspaces[0]?.coderName || "";
       const explorerCoderUser = gsdSettings.gsd?.coderUser || gsdSettings.coderUser || "";
       const explorerDispatchWs = workbenchPlugin?._explorerFindWs?.(explorerWorkspaceName);
@@ -1027,7 +1023,7 @@ const runtimeSmoke = String.raw`
         killTmuxSession(nestedOpenSessionName);
         cp.execFileSync("tmux", ["new-session", "-d", "-s", nestedOpenSessionName, "sleep 600"], {stdio:"ignore"});
         const vinLeavesBeforeOpen = app.workspace.getLeavesOfType("vin-terminal-view").length;
-        const gsd = app.plugins.plugins["can-workbench"]?.modules?.gsd;
+        const gsd = app.plugins.plugins["workbench"]?.modules?.gsd;
         if (!gsd?.openSpecificSession) throw new Error("GSD openSpecificSession unavailable for nested-settings open check");
         await gsd.openSpecificSession(nestedWorkspace.coderName, nestedOpenSessionName, "", false, "");
         await delay(900);
@@ -1129,7 +1125,7 @@ const runtimeSmoke = String.raw`
 
 const postSmokeCleanupAudit = String.raw`
 (()=>{
-  const gsd = app.plugins.plugins["can-workbench"]?.modules?.gsd;
+  const gsd = app.plugins.plugins["workbench"]?.modules?.gsd;
   for (const btn of [...document.querySelectorAll(".modal-close-button")]) btn.click();
   const settings = gsd?.settings || {};
   const sessionNames = [];
@@ -1309,7 +1305,7 @@ function assertRuntime(result) {
       const expectedHost = `main.${upload.workspace}.${upload.coderUser}.coder`;
       if (upload.marked?.scpHost !== expectedHost) failures.push(`nested upload marked target mismatch: ${upload.marked?.scpHost || ""}`);
       if (upload.named?.scpHost !== expectedHost) failures.push(`nested upload named target mismatch: ${upload.named?.scpHost || ""}`);
-      if (upload.marked?.remoteDir !== "/home/coder/vm-screenshots") failures.push(`nested upload marked remote dir mismatch: ${upload.marked?.remoteDir || ""}`);
+      if (upload.marked?.remoteDir !== upload.configuredDir) failures.push(`nested upload marked remote dir mismatch: ${upload.marked?.remoteDir || ""}`);
     }
     if (result.nestedFallback.status?.available) {
       const status = result.nestedFallback.status;
@@ -1386,7 +1382,7 @@ function assertPostSmokeCleanup(cleanup, baseline = {}) {
 }
 
 async function main() {
-  const sourceOnly = process.argv.includes("--source-only") || process.env.CAN_WORKBENCH_VERIFY_SOURCE_ONLY === "1";
+  const sourceOnly = process.argv.includes("--source-only") || process.env.WORKBENCH_VERIFY_SOURCE_ONLY === "1";
   check("python3", ["build.py", "--check"]);
   check(process.execPath, ["--check", "main.js"]);
   check(process.execPath, ["--check", "vendor/gsd-control/main.js"]);
@@ -1404,7 +1400,7 @@ async function main() {
   assertTerminalLocationCategorySource();
   await assertTerminalSurfingLinkBehavior();
   if (sourceOnly) {
-    process.stdout.write("can-workbench source verification passed\n");
+    process.stdout.write("workbench source verification passed\n");
     return;
   }
 
@@ -1416,7 +1412,7 @@ async function main() {
   assertPostSmokeCleanup(cleanup, result.settingsBaseline || {});
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   process.stdout.write(`${JSON.stringify({ postSmokeCleanup: cleanup }, null, 2)}\n`);
-  process.stdout.write("can-workbench verification passed\n");
+  process.stdout.write("workbench verification passed\n");
 }
 
 main().catch((error) => {

@@ -29,14 +29,14 @@ Ask: `Show me how the canonical TODO and project backlog work together.`
 
 Ask: `Help me install the vault template without overwriting my existing notes.`
 
-## Can Workbench operator surface
+## Workbench operator surface
 
 - Use Obsidian as the front door for vault context, project terminals, remote workspaces, files, session categories, diagrams, and secure input.
 - Connect Local, Coder, or direct SSH targets without copying another operator's settings.
 - Keep human-visible project tmux separate from hidden system/runtime sessions.
 - Install only the pinned release or reproducibly build from reviewed module sources.
 
-Ask: `Tour Can Workbench and design my Local/Coder/SSH connection layout without installing it yet.`
+Ask: `Tour Workbench and design my Local/Coder/SSH connection layout without installing it yet.`
 
 ## Building and fixing software
 
@@ -50,7 +50,7 @@ Ask: `Use $project-kickoff to turn my idea into PROJECT.md and PLANS.md.`
 ## Secure credential intake
 
 - Install a workspace-side `secenv` runtime.
-- Install a verified Can Workbench release into Obsidian.
+- Install a verified Workbench release into Obsidian.
 - Trigger a native encrypted modal from a Codex task.
 - Require field-by-field provider, permission, resource, environment, risk, lifetime, destination, and consumer information.
 - Install owner-only files without printing secrets and without chat/browser/terminal fallback.

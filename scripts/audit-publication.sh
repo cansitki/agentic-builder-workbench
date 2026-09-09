@@ -43,7 +43,7 @@ require_file knowledge/vibecoding-security/Vibecoding\ Security\ -\ START\ HERE.
 require_file tools/secenv/pyproject.toml
 require_file tools/secenv/src/secenv_collector/cli.py
 require_file tools/secenv/tests/test_secure_flow.py
-require_file integrations/can-workbench/README.md
+require_file integrations/workbench/README.md
 require_file .agents/skills/secure-credential-intake/SKILL.md
 require_file .agents/skills/workbench-onboarding/SKILL.md
 
@@ -59,7 +59,7 @@ sensitive_files="$(find . -type d \( -name '.git' -o -name '.venv' -o -name 'ven
 [[ -z "$sensitive_files" ]] || fail "sensitive-looking file(s): $(printf '%s' "$sensitive_files" | tr '\n' ' ')"
 
 # Private-key material is checked by check-private-paths.py, including source;
-# only the hash-verified upstream UI placeholder is exempted.
+# no source-file exemptions apply.
 scan_pattern "GitHub token shape" 'gh[pousr]_[A-Za-z0-9]{20,}'
 scan_pattern "AWS access-key shape" 'AKIA[0-9A-Z]{16}'
 scan_pattern "OpenAI key shape" 'sk-(proj-)?[A-Za-z0-9_-]{20,}'

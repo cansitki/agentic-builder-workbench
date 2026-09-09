@@ -38,7 +38,7 @@ const requiredHeadings = [
   "### Security",
   "### Session management",
   "## Platform-Specific Configuration",
-  "### Can Workbench plugin",
+  "### Workbench plugin",
   "### Key paths",
   "### Legacy systems",
   "## Active Projects",

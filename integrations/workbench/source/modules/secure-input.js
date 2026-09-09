@@ -1,7 +1,7 @@
 /*
- * Secure Input module — runs inside can-workbench.
+ * Secure Input module — runs inside workbench.
  *
- * A single persistent broker listener watches the selected Nomarh workspace
+ * A single persistent broker listener watches the explicitly selected workspace
  * for owner-only credential requests. The modal encrypts values in the
  * Obsidian renderer before an encrypted envelope is streamed through SSH.
  * Plaintext values are never written to terminal input, command arguments,
@@ -179,7 +179,7 @@ class SecureInputModal extends Modal {
     this.completed = true;
     this._wipeInputs();
     this.module.cancel(this.request.id).catch((error) => {
-      console.warn('[can-workbench] secure input cancellation failed:', error && error.message);
+      console.warn('[workbench] secure input cancellation failed:', error && error.message);
     });
     this.close();
   }
@@ -189,7 +189,7 @@ class SecureInputModal extends Modal {
     this.contentEl.empty();
     if (!this.completed && !this.suppressCancel) {
       this.module.cancel(this.request.id).catch((error) => {
-        console.warn('[can-workbench] secure input dismissal failed:', error && error.message);
+        console.warn('[workbench] secure input dismissal failed:', error && error.message);
       });
     }
     this.module.modalClosed(this);
@@ -222,7 +222,7 @@ class SecureInputModule {
     this.settings = this.plugin.settings.secureInput;
     let dirty = false;
     if (typeof this.settings.enabled !== 'boolean') {
-      this.settings.enabled = true;
+      this.settings.enabled = false;
       dirty = true;
     }
     if (typeof this.settings.workspace !== 'string') {
@@ -265,16 +265,10 @@ class SecureInputModule {
     const workspaces = this.plugin._getGsdWorkspaces(this._gsdSettings());
     if (!workspaces.length) return null;
     const configured = this.settings.workspace.trim();
-    if (configured) {
-      const exact = workspaces.find((workspace) =>
-        workspace && (workspace.coderName === configured || workspace.displayName === configured)
-      );
-      if (exact) return exact;
-    }
-    return workspaces.find((workspace) => workspace && workspace.coderName === 'ops-main')
-      || workspaces.find((workspace) => workspace && workspace.coderName === 'main')
-      || workspaces.find((workspace) => workspace && workspace.type !== 'local')
-      || workspaces[0];
+    if (!configured) return null;
+    // Never redirect a credential request to a different workspace.
+    const matches = workspaces.filter(workspace => workspace && workspace.coderName === configured);
+    return matches.length === 1 ? matches[0] : null;
   }
 
   _target(workspace) {
@@ -359,16 +353,20 @@ class SecureInputModule {
     this.listener = child;
     let stderr = '';
 
-    child.stdout.on('data', (chunk) => this._consumeListenerOutput(chunk));
+    child.stdout.on('data', (chunk) => {
+      if (this.listener === child) this._consumeListenerOutput(chunk);
+    });
     child.stderr.on('data', (chunk) => {
       if (stderr.length < 8192) stderr += chunk.toString();
     });
     child.on('error', (error) => {
-      if (this.listener === child) this.listener = null;
+      if (this.listener !== child) return;
+      this.listener = null;
       this._listenerFailed(error);
     });
     child.on('close', (code) => {
-      if (this.listener === child) this.listener = null;
+      if (this.listener !== child) return;
+      this.listener = null;
       if (this.stopping) return;
       const detail = stderr.trim();
       this._listenerFailed(new Error(detail || `credential listener exited ${code}`));
@@ -393,7 +391,7 @@ class SecureInputModule {
       try {
         event = JSON.parse(line);
       } catch (_) {
-        console.warn('[can-workbench] ignored malformed secure input event');
+        console.warn('[workbench] ignored malformed secure input event');
         continue;
       }
       if (event.type === 'ready') {
@@ -472,7 +470,7 @@ class SecureInputModule {
 
   _receiveRequest(request) {
     if (!this._validRequest(request)) {
-      console.warn('[can-workbench] ignored invalid secure input request');
+      console.warn('[workbench] ignored invalid secure input request');
       return;
     }
     if (this.knownRequests.has(request.id)) return;
@@ -583,6 +581,29 @@ class SecureInputModule {
     await this._runBroker(['workbench', 'cancel', requestId]);
   }
 
+  async configure(change) {
+    if (this.activeModal || this.queue.length) throw new Error('Finish or cancel pending credential requests before changing the listener.');
+    const workspace = change.workspace === undefined ? this.settings.workspace : String(change.workspace).trim();
+    const enabled = change.enabled === undefined ? this.settings.enabled : Boolean(change.enabled);
+    if (enabled) {
+      const matches = this.plugin._getGsdWorkspaces(this._gsdSettings()).filter(w => w.coderName === workspace);
+      if (!workspace || matches.length !== 1) throw new Error('Select one available workspace before enabling Secure Input.');
+      this._target(matches[0]);
+    }
+    if (this.listener) {
+      const previous = this.listener;
+      this.listener = null;
+      previous.kill();
+    }
+    this.activeWorkspace = null;
+    this.listenerBuffer = '';
+    this.knownRequests.clear();
+    this.settings.workspace = workspace;
+    this.settings.enabled = enabled;
+    await this.plugin.saveSettings();
+    this.restart();
+  }
+
   restart() {
     if (this.reconnectTimer) {
       window.clearTimeout(this.reconnectTimer);
@@ -594,8 +615,8 @@ class SecureInputModule {
       child.kill();
     }
     this.reconnectAttempt = 0;
-    this.status = 'restarting';
-    window.setTimeout(() => this.start(), 100);
+    this.status = this.settings.enabled ? 'restarting' : 'disabled';
+    if (this.settings.enabled) window.setTimeout(() => this.start(), 100);
   }
 
   async unload() {

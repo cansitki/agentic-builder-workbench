@@ -4,9 +4,9 @@
 
 Supported target: macOS/Linux or a Linux remote workspace with meaningful POSIX ownership and mode bits. Native Windows has not been validated; use a reviewed WSL/remote-Linux path rather than assuming `0600` semantics.
 
-Can Workbench v2.2.0 masks `password` inputs but not visible `text`/`textarea` inputs. `secenv` rejects secret-looking variable names when they are assigned a visible input type. If a required multiline secret cannot be entered correctly through a masked password field, stop and add/review masked multiline or file-selection support; do not use a visible textarea or another channel.
+Workbench v3.0.0 masks `password` inputs but not visible `text`/`textarea` inputs. `secenv` rejects secret-looking variable names when they are assigned a visible input type. If a required multiline secret cannot be entered correctly through a masked password field, stop and add/review masked multiline or file-selection support; do not use a visible textarea or another channel.
 
-The only intake command in this distribution is `secenv ask`. It creates an owner-only public request manifest and waits. Can Workbench reads the manifest, shows a native Obsidian modal, encrypts the entered values on the operator device, and sends only a ciphertext envelope to the workspace. `secenv` decrypts in process memory, writes the declared owner-only destinations atomically, removes request/submission artifacts, and prints only redacted state.
+The only intake command in this distribution is `secenv ask`. It creates an owner-only public request manifest and waits. Workbench reads the manifest, shows a native Obsidian modal, encrypts the entered values on the operator device, and sends only a ciphertext envelope to the workspace. `secenv` decrypts in process memory, writes the declared owner-only destinations atomically, removes request/submission artifacts, and prints only redacted state.
 
 There is deliberately no `serve`, `collect`, public-link, browser, terminal prompt, `inspect`, or plaintext-output command.
 
@@ -17,7 +17,7 @@ Protected intake path:
 ```text
 Codex runs secenv ask
   → public request metadata (0600)
-  → Can Workbench native modal
+  → Workbench native modal
   → AES-256-GCM values + RSA-OAEP-SHA256 wrapped key
   → ciphertext-only SSH/local stdin
   → workspace process-memory decryption
@@ -65,7 +65,7 @@ The example provider is fictional. Replace every non-secret detail with current 
 
 ## Broker commands
 
-Can Workbench uses these internally:
+Workbench uses these internally:
 
 ```bash
 secenv workbench watch
@@ -78,7 +78,7 @@ secenv workbench cancel REQUEST_ID
 ## Failure behavior
 
 - Missing or malformed informed metadata: request rejected before a modal opens.
-- Can Workbench unavailable: `ask` waits until expiry; there is no fallback.
+- Workbench unavailable: `ask` waits until expiry; there is no fallback.
 - Modal cancelled/dismissed: request returns `cancelled`, installs nothing, and cleans artifacts.
 - Request expires: installs nothing and cleans artifacts.
 - Requesting process crashes: the Workbench listener removes request/submission/cancellation residue when the request reaches expiry.

@@ -52,7 +52,7 @@ function loadModule() {
 
 function fakePlugin() {
   const gsdSettings = {
-    coderUser: "cansitki",
+    coderUser: "example-user",
     workspaces: [
       { coderName: "main", displayName: "legacy", type: "coder" },
       { coderName: "ops-main", displayName: "ops-main", type: "coder" },
@@ -101,7 +101,19 @@ async function main() {
   const secureInput = new SecureInputModule(plugin);
   await secureInput.load();
 
-  assert.equal(secureInput._selectWorkspace().coderName, "ops-main", "ops-main must be the automatic target");
+  assert.equal(secureInput.settings.enabled, false, "fresh install must not connect automatically");
+  assert.equal(secureInput._selectWorkspace(), null, "no automatic credential target");
+  secureInput.settings.workspace = "missing";
+  assert.equal(secureInput._selectWorkspace(), null, "missing target must not fall back");
+  await assert.rejects(secureInput.configure({ enabled: true }), /Select one available workspace/);
+  await secureInput.configure({ workspace: "ops-main" });
+  assert.equal(secureInput.settings.enabled, false);
+  assert.equal(secureInput.status, "disabled");
+  secureInput.activeModal = {};
+  await assert.rejects(secureInput.configure({ workspace: "main" }), /pending credential requests/);
+  secureInput.activeModal = null;
+  assert.equal(secureInput.settings.workspace, "ops-main");
+  assert.equal(secureInput._selectWorkspace().coderName, "ops-main");
   assert.equal(
     secureInput._target(secureInput._selectWorkspace()).coderTransport,
     true,

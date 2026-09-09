@@ -68,15 +68,15 @@ node scripts/bootstrap.mjs vault /path/to/vault
 
 For an existing vault, do not copy blindly. Search/merge canonical TODO, daily-folder, and index conventions through a reviewed plan. Back up and restore-test before bulk changes.
 
-## 6. Install Can Workbench on the operator device
+## 6. Install Workbench on the operator device
 
 ```bash
-bash scripts/install-can-workbench.sh /absolute/path/to/ObsidianVault
+bash scripts/install-workbench.sh /absolute/path/to/ObsidianVault
 ```
 
-The installer uses the included Can Workbench v2.2.0 snapshot offline. It requires the complete source inventory and pinned release hashes to match and refuses an existing plugin directory. Read `integrations/can-workbench/SOURCE.md` for defaults requiring explicit configuration.
+The installer uses the included Workbench v3.0.0 snapshot offline. It requires the complete source inventory and pinned release hashes to match and refuses an existing plugin directory. Read `integrations/workbench/SOURCE.md` for defaults requiring explicit configuration.
 
-Enable the plugin in Obsidian, then configure only your own Local/Coder/SSH connection and explicit secure-input workspace.
+Enable Workbench in Obsidian and add your own connection. Coder username and workspaces start empty. For remote uploads set Upload directory. In Settings → Workbench → Secure Input, select a workspace before enabling the listener. For an existing old plugin, follow [the migration guide](integrations/workbench/MIGRATION.md); never enable both versions.
 
 ## 7. Install secenv in every credential-consuming workspace
 
@@ -85,11 +85,11 @@ bash scripts/install-secenv.sh
 secenv doctor
 ```
 
-Can Workbench and `secenv` must point to the same workspace/user. Restart the Workbench secure-input listener and verify it reports `listening`.
+Workbench and `secenv` must point to the same workspace/user. Restart the Workbench secure-input listener and verify it reports `listening`.
 
 ## 8. Test secure input using dummy data
 
-Follow `integrations/can-workbench/README.md`. Use an obvious dummy value, confirm ciphertext-only/redacted output and mode `0600`, then delete the dummy destination. Do not use a real token to test transport.
+Follow `integrations/workbench/README.md`. Use an obvious dummy value, confirm ciphertext-only/redacted output and mode `0600`, then delete the dummy destination. Do not use a real token to test transport.
 
 If any part fails, stop credential-dependent setup. There is no chat, terminal, screenshot, issue, note, or browser fallback.
 

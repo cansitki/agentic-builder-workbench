@@ -25,7 +25,7 @@ agent/workspace request metadata
 
 ## Assumptions
 
-- The operator device, Obsidian installation, pinned Can Workbench code, workspace OS account, and SSH/Coder transport are trusted enough for the requested credential.
+- The operator device, Obsidian installation, pinned Workbench code, workspace OS account, and SSH/Coder transport are trusted enough for the requested credential.
 - The workspace public key belongs to the intended workspace shown in the modal.
 - Filesystem permissions are meaningful on the target OS/filesystem.
 - The user verifies provider/account, permissions, resources, environment, destination, and consumer before submission.
@@ -35,9 +35,9 @@ agent/workspace request metadata
 | Threat | Control | Residual risk |
 |---|---|---|
 | Secret pasted into chat/prompt | Hard-gate AGENTS + secure intake skill; no value-taking CLI arguments | User/agent can still violate policy outside this tool |
-| Secret shown in a visible text area | Secret-looking variable names are restricted to masked password fields | Pinned v2.2.0 cannot safely collect a multiline secret that needs a textarea; workflow must stop |
+| Secret shown in a visible text area | Secret-looking variable names are restricted to masked password fields | Pinned v3.0.0 cannot safely collect a multiline secret that needs a textarea; workflow must stop |
 | Secret exposed in terminal | `ask` has no plaintext prompt; broker takes ciphertext only; CLI prints redacted state | Installed consumer or same-user process may read destination |
-| Browser/bearer-link leak | No server, collect, public URL, or browser command is shipped | Can Workbench/Obsidian must be available |
+| Browser/bearer-link leak | No server, collect, public URL, or browser command is shipped | Workbench/Obsidian must be available |
 | Overbroad credential request | Required detailed description and per-field help; modal shows origin and destinations | Metadata can be dishonest; operator must review and provider should enforce scope |
 | MITM/route confusion | Local process or authenticated Coder/SSH transport; direct SSH refuses changed host keys; modal shows workspace | Compromised endpoint or transport configuration remains dangerous |
 | Submission replay/duplicate | Unique random request ID, expiry, associated-data binding, exclusive submission create | Same compromised account can create a fresh malicious request |

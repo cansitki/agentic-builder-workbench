@@ -105,11 +105,11 @@ Mail, payments, signing, and other production-critical systems are separate gate
 
 ### Secure credential intake — hard gate, no exceptions
 
-- The only approved way for the user to provide any secret value is `secenv ask` through the native Can Workbench secure-input modal.
+- The only approved way for the user to provide any secret value is `secenv ask` through the native Workbench secure-input modal.
 - This applies to every agent/runtime, project, workspace, provider, environment, urgency, and credential type: API tokens, passwords, private keys, client secrets, seed phrases, recovery codes, passphrases, production connection material, and one-time links.
 - Never request, accept, or instruct the user to paste a secret into chat, a prompt, terminal/tmux input or scrollback, `read`/`read -s`, command arguments, source/config files edited through chat, vault notes, screenshots, logs, issues, commits, email, messaging apps, or an agent-created browser form/link.
 - There is no legacy browser-link or “just this once” fallback.
-- If `secenv`, Can Workbench, its listener, or the modal is unavailable, stop all credential-dependent work and repair the secure path.
+- If `secenv`, Workbench, its listener, or the modal is unavailable, stop all credential-dependent work and repair the secure path.
 - If the user voluntarily sends a secret elsewhere, treat it as exposed: do not use or repeat it; stop dependent work, require revocation/rotation, and restart intake only through `secenv ask`.
 
 Before every modal, determine and encode for **each field**:
@@ -134,12 +134,12 @@ Rules:
 - Run `secenv doctor`, then `secenv ask --schema [REVIEWED SCHEMA]` and keep it running until submit/cancel/expiry.
 - Before submission, ensure the modal shows the expected workspace, requesting folder, destinations, and variable names.
 - Accept only redacted status, paths, modes, variable names, and `<set>`/`<empty>` markers.
-- Use masked password fields for secret-looking variables. The pinned Workbench v2.2.0 textarea is visible; if a multiline secret cannot be entered through a masked field, stop until a reviewed masked/file-input extension exists.
+- Use masked password fields for secret-looking variables. The pinned Workbench v3.0.0 textarea is visible; if a multiline secret cannot be entered through a masked field, stop until a reviewed masked/file-input extension exists.
 - After intake, verify destination owner/mode, expected variable names without values, and a minimal non-destructive authentication check. Clean request/submission artifacts.
 - Secret files remain owner-only and uncommitted.
 - Secure intake does not authorize the operation that consumes the credential.
 
-Implementation: `tools/secenv/`, `integrations/can-workbench/`, and the `secure-credential-intake` skill.
+Implementation: `tools/secenv/`, `integrations/workbench/`, and the `secure-credential-intake` skill.
 
 ### Tmux visibility and ownership
 
@@ -366,12 +366,12 @@ When asked to close the day:
 
 - OS: `[MACOS/WINDOWS/LINUX]`.
 - Vault: `[ABSOLUTE PATH]`.
-- Can Workbench plugin: `[VAULT]/.obsidian/plugins/can-workbench/`.
-- Edit Can Workbench sources in `modules/` and rebuild; do not hand-edit generated `main.js`.
+- Workbench plugin: `[VAULT]/.obsidian/plugins/workbench/`.
+- Edit Workbench sources in `modules/` and rebuild; do not hand-edit generated `main.js`.
 - Connections: `[CODER / SSH / LOCAL]`.
 - Store tokens in `[OS KEYCHAIN / PASSWORD MANAGER]`; use the secure modal for agent intake.
 
-### Can Workbench plugin
+### Workbench plugin
 
 - Install only the pinned, verified release or build reproducibly from reviewed source.
 - Local runtime settings, connection routes, tokens, PEM files, and workspace identity are never copied between users.
@@ -385,7 +385,7 @@ When asked to close the day:
 - Personal brain: `[PATH]`.
 - Memory/profile: `[PATHS]`.
 - Project root: `[PATH]`.
-- Can Workbench source/install: `[PATHS]`.
+- Workbench source/install: `[PATHS]`.
 - Secure credential config/state: `[NON-SECRET PATH REFERENCES]`.
 - Durable service definitions/logs: `[PATHS]`.
 

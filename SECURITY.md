@@ -4,7 +4,7 @@ Do not open an issue containing a secret, private key, seed phrase, recovery cod
 
 Report sensitive findings privately to the repository owner through a previously verified channel. Do not invent a new contact route from an unverified profile or message.
 
-For credentials needed during agent work, the only approved value-entry route is `secenv ask` through the native Can Workbench modal. Do not paste a secret into a GitHub issue, discussion, pull request, chat, terminal, or browser form.
+For credentials needed during agent work, the only approved value-entry route is `secenv ask` through the native Workbench modal. Do not paste a secret into a GitHub issue, discussion, pull request, chat, terminal, or browser form.
 
 If a credential appears in this repository:
 

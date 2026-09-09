@@ -1,9 +1,9 @@
 {
-  "id": "can-workbench",
-  "name": "Can Workbench",
-  "version": "2.2.0",
+  "id": "workbench",
+  "name": "Workbench",
+  "version": "3.0.0",
   "minAppVersion": "1.0.0",
   "description": "Unified workbench: remote connections (Coder / SSH / local), embedded terminal, workspace views, countdown bar, and Excalidraw live text.",
-  "author": "Can Sitki",
+  "author": "Workbench contributors",
   "isDesktopOnly": true
 }

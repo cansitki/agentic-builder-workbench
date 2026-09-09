@@ -1,5 +1,5 @@
 /*
- * VM Connect module — runs inside can-workbench.
+ * VM Connect module — runs inside workbench.
  *
  * Owns: ribbon separators, screenshot paste upload (terminal view),
  * per-session terminal tinting (via xterm theme API + DOM), manual
@@ -17,8 +17,6 @@ const path = require('path');
 const os = require('os');
 
 const VIEW_TYPE = 'vin-terminal-view';
-const VM_IMG_DIR = '/tmp/vm-screenshots';
-const CODER_UPLOAD_DIR = '/home/coder/vm-screenshots';
 
 // SSH connection-multiplexing. First call opens a master socket at
 // ControlPath; subsequent calls reuse it and skip the full handshake.
@@ -27,7 +25,7 @@ const SSH_MUX_ARGS = [
   '-o', 'ControlMaster=auto',
   '-o', 'ControlPath=/tmp/cw-paste-mux-%r@%h:%p',
   '-o', 'ControlPersist=1800',
-  '-o', 'StrictHostKeyChecking=no',
+  '-o', 'StrictHostKeyChecking=accept-new',
   '-o', 'ServerAliveInterval=60',
 ];
 
@@ -53,7 +51,7 @@ class VMConnectModule {
     // Note: the "Connect to VM" and "Connect to Coder" ribbon icons used
     // to live here. They've been merged into GSD Control's picker — VM
     // is now a workspace entry with `type: "vm"` in gsd.workspaces,
-    // handled by CanWorkbench._openVmSession via a wrapper around
+    // handled by Workbench._openVmSession via a wrapper around
     // gsd.openSpecificSession.
 
     // Add separator ribbon icons
@@ -64,7 +62,7 @@ class VMConnectModule {
 
     this.plugin.addCommand({
       id: 'vm-connect-send-screenshot',
-      name: 'VM Connect: Send screenshot to VM Claude',
+      name: 'Upload: Send screenshot to selected workspace',
       callback: () => this.sendScreenshot()
     });
 
@@ -392,7 +390,7 @@ class VMConnectModule {
         scpHost: ws.sshHost,
         sshArgsArr: ws.pemPath ? ['-i', ws.pemPath] : [],
         pemPath: ws.pemPath || null,
-        remoteDir: VM_IMG_DIR,
+        remoteDir: ws.uploadDir || '',
         label: ws.displayName || ws.coderName
       };
     }
@@ -403,7 +401,7 @@ class VMConnectModule {
       scpHost: `main.${ws.coderName}.${coderUser}.coder`,
       sshArgsArr: [],
       pemPath: null,
-      remoteDir: CODER_UPLOAD_DIR,
+      remoteDir: ws.uploadDir || '',
       label: `Coder (${ws.coderName})`
     };
   }
@@ -422,28 +420,13 @@ class VMConnectModule {
 
     // Fast path: marker set by the orchestrator when we open the session.
     const workspaces = this.plugin._getGsdWorkspaces(gsdSettings);
-    if (session.__cwWorkspace && workspaces.length) {
+    if (session.__cwWorkspace) {
       const ws = workspaces.find(w => w.coderName === session.__cwWorkspace);
-      if (ws) {
-        const target = this._uploadTargetFromWorkspace(ws, gsdSettings);
-        if (target) return target;
-      }
+      return ws ? this._uploadTargetFromWorkspace(ws, gsdSettings) : null;
     }
     // Fallback: match by session name.
     const namedTarget = this.resolveUploadTarget(session.name);
     if (namedTarget) return namedTarget;
-
-    // Final fallback for manually-opened terminal tabs. Can's normal
-    // Workbench use is remote-first; if a tab is not explicitly marked
-    // local and does not match a configured project, send paste uploads
-    // to the main remote workspace instead of leaking a Mac /var/folders
-    // screenshot path into the terminal.
-    if (workspaces.length) {
-      const defaultWs = workspaces.find(w => w && w.coderName === 'main' && w.type !== 'local')
-        || workspaces.find(w => w && w.type !== 'local');
-      const target = this._uploadTargetFromWorkspace(defaultWs, gsdSettings);
-      if (target) return target;
-    }
 
     return null;
   }
@@ -481,7 +464,7 @@ class VMConnectModule {
     // local path into the session. Only sessions mapped to a remote
     // workspace (VM/SSH/Coder) use the SSH upload path.
     const target = this.resolveUploadTargetForSession(pasteSession);
-    const isLocal = !target || this._isLocalSession(pasteSession);
+    const isLocal = this._isLocalSession(pasteSession);
 
     const items = e.clipboardData?.items;
     if (!items) return;
@@ -499,6 +482,10 @@ class VMConnectModule {
     e.preventDefault();
     e.stopPropagation();
 
+    if (!target && !isLocal) {
+      new Notice('Map this terminal to a Workbench workspace before uploading an image.');
+      return;
+    }
     const blob = imageItem.getAsFile();
     if (!blob) return;
 
@@ -619,7 +606,13 @@ class VMConnectModule {
     // path is pasted into the pane the user actually dropped onto.
     const dropSession = this._sessionForElement(termEl);
     const target = dropSession ? this.resolveUploadTargetForSession(dropSession) : null;
-    if (!target || !dropSession) return;
+    if (!dropSession || this._isLocalSession(dropSession)) return;
+    if (!target) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      new Notice('Map this terminal to a Workbench workspace before uploading files.');
+      return;
+    }
 
     // Beat the vendored internetvin-terminal drop handler (which types
     // the local Mac path, useless on the remote VM). Both are capture-
@@ -694,6 +687,9 @@ class VMConnectModule {
    * after auth. Non-fatal on failure — the upload will try anyway.
    */
   async _ensureSshMux(target) {
+    if (!target || !target.remoteDir || !target.remoteDir.startsWith('/') || /[\x00-\x1f\x7f]/.test(target.remoteDir)) {
+      throw new Error('Configure an absolute Upload directory for this workspace in Workbench settings.');
+    }
     const muxKey = `${target.scpHost}|${target.pemPath || ''}`;
     if (!this._warmMuxes) this._warmMuxes = new Set();
     if (this._warmMuxes.has(muxKey)) return;
@@ -750,6 +746,9 @@ class VMConnectModule {
    * pastes skip the full handshake.
    */
   _pipeUploadViaSsh(target, remoteFile, buffer) {
+    if (!target.remoteDir || !target.remoteDir.startsWith('/') || /[\x00-\x1f\x7f]/.test(target.remoteDir)) {
+      throw new Error('Configure an absolute Upload directory for this workspace in Workbench settings.');
+    }
     const shq = (s) => "'" + String(s).replace(/'/g, "'\\''") + "'";
     const remoteCmd = `mkdir -p ${shq(target.remoteDir)} && cat > ${shq(remoteFile)}`;
     const args = [
@@ -841,6 +840,10 @@ class VMConnectModule {
   }
 
   async sendScreenshot() {
+    if (process.platform !== 'darwin') {
+      new Notice('Manual screen capture is available on macOS. On this platform, paste an image or drop a file into a mapped terminal.');
+      return;
+    }
     // Find the active terminal session and resolve its upload target from
     // GSD workspaces. If no terminal is focused, fall back to the first
     // VM-type workspace in GSD settings. If none is configured, bail out.
@@ -848,24 +851,10 @@ class VMConnectModule {
     let target = null;
     if (leaves.length > 0) {
       const active = leaves[0].view.activeSession;
-      if (active) target = this.resolveUploadTarget(active.name);
+      if (active) target = this.resolveUploadTargetForSession(active);
     }
     if (!target) {
-      const gsdVendor = this.plugin.modules?.gsd;
-      const ws = this.plugin._getGsdWorkspaces(gsdVendor?.settings)
-        .find(w => w.type === 'vm' || w.type === 'ssh');
-      if (ws && ws.sshHost) {
-        target = {
-          scpHost: ws.sshHost,
-          sshArgsArr: ws.pemPath ? ['-i', ws.pemPath] : [],
-          pemPath: ws.pemPath || null,
-          remoteDir: VM_IMG_DIR,
-          label: ws.displayName || ws.coderName
-        };
-      }
-    }
-    if (!target) {
-      new Notice('Send screenshot: no VM workspace configured in Settings → Can Workbench');
+      new Notice('Send screenshot: no VM workspace configured in Settings → Workbench');
       return;
     }
 

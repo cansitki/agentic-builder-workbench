@@ -8,14 +8,14 @@ Această recepție aparține proiectului de transfer; nu înlocuiește TODO-ul g
 | Identitate | Destinatar, OS, vault, conexiune și workspace fixate | În așteptare |
 | Git | Clone curat, SHA așteptat, acces repo | De verificat pe destinație |
 | Repo | `bash scripts/verify-all.sh` | De rulat pe destinație |
-| Plugin | Hashuri, build, activare în Obsidian | Artefacte identice cu sursa; UI destinație netestat |
+| Plugin | Hashuri, build, activare în Obsidian | Fork 3.0.0; formulare native testate local, destinație netestată |
 | Brain | Placeholders completate, check-adopted-brain trece | Template inclus |
 | Skill-uri | Opt skill-uri invocate; extensii alese | Nucleu inclus; extensii de configurat |
 | Vault | Citire CLI index/TODO; daily path corect | Template inclus; CLI destinație de verificat |
 | Daily | Scriere dummy, Links Inbox ultimul, timezone | Netestat pe destinație |
 | Terminal | Folder corect, disconnect/reconnect, output | Netestat pe destinație |
 | Work/system | Proiecte vizibile, sys-* ascunse | Netestat pe destinație |
-| Fișiere | Upload/download dummy, hash identic | Netestat; atenție la defaultul Coder upload |
+| Fișiere | Upload/download dummy, hash identic | Pe destinație: configurează explicit Upload directory |
 | Secure input | doctor, listener, modal dummy, cancel/expiry, 0600 | Runtime/teste incluse; UI destinație netestat |
 | Proiect pilot | Bootstrap nou, editare, test și commit | Netestat pe destinație |
 | Sync | Notă dummy sincronizată între dispozitive | Necesită cont și topologie proprii |
@@ -26,8 +26,8 @@ Această recepție aparține proiectului de transfer; nu înlocuiește TODO-ul g
 
 ## Diferențe explicite
 
-- Codul pluginului este cel auditat, cu defaulturi descrise în
-  [SOURCE.md](integrations/can-workbench/SOURCE.md).
+- Codul pluginului este derivata portabilă 3.0.0, descrisă în
+  [SOURCE.md](integrations/workbench/SOURCE.md).
 - CLI-ul Obsidian din sursă include un bridge/wrapper suplimentar; nu este în
   bundle-ul pluginului. CLI funcțional pe destinație este un criteriu separat.
 - Template-ul privat de infrastructură, theme sync, `tlist`, wrapper-ele,

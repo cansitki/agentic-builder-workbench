@@ -47,15 +47,15 @@ if find tools/secenv -type d \( -name build -o -name '*.egg-info' -o -name __pyc
 fi
 
 mkdir -p "$workbench_test_root/Vault/.obsidian"
-bash scripts/install-can-workbench.sh "$workbench_test_root/Vault" >/dev/null
+bash scripts/install-workbench.sh "$workbench_test_root/Vault" >/dev/null
 
 set +e
-bash scripts/install-can-workbench.sh "$workbench_test_root/Vault" >/dev/null 2>&1
+bash scripts/install-workbench.sh "$workbench_test_root/Vault" >/dev/null 2>&1
 workbench_repeat_rc=$?
 set -e
 if [[ "$workbench_repeat_rc" -eq 0 ]]; then
-  printf 'Can Workbench installer overwrote an existing installation.\n' >&2
+  printf 'Workbench installer overwrote an existing installation.\n' >&2
   exit 1
 fi
 
-printf 'Installer tests passed: secenv is repeatable/key-preserving/source-clean; Can Workbench is pinned and no-overwrite.\n'
+printf 'Installer tests passed: secenv is repeatable/key-preserving/source-clean; Workbench is pinned and no-overwrite.\n'

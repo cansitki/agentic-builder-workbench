@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scan paths, allowing only exact reviewed public plugin source bytes."""
+"""Scan every source and document for private home paths and key material."""
 import re
 from pathlib import Path
 from importlib.util import spec_from_file_location, module_from_spec
@@ -18,15 +18,8 @@ for path in ROOT.rglob('*'):
     if any(part in ignored for part in rel.parts) or not path.is_file():
         continue
     text = path.read_text(errors='replace')
-    if path.is_relative_to(module.SOURCE):
-        # The complete byte inventory was checked above, not a blanket vendor exclusion.
-        # Ignore only the exact public UI placeholder, never actual key bodies.
-        placeholder = '-----BEGIN OPENSSH ' + 'PRIVATE KEY-----\\n...\\n-----END OPENSSH PRIVATE KEY-----'
-        if key_pattern.search(text.replace(placeholder, '')):
-            failed.append(str(rel))
-        continue
     if pattern.search(text) or key_pattern.search(text):
         failed.append(str(rel))
 if failed:
     raise SystemExit('Private path check failed in: ' + ', '.join(failed))
-print('Private path check passed; exact public source defaults are documented.')
+print('Private path and private-key checks passed across all source and documents.')

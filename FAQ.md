@@ -14,9 +14,9 @@ No. Deletion does not undo exposure to the chat, transcript, logs, screenshots, 
 
 ## Is the secure modal inside Codex?
 
-No. Codex invokes `secenv ask`; Can Workbench in Obsidian is the trusted value-entry UI. Codex receives only redacted state. [Official Codex cloud secrets](https://learn.chatgpt.com/docs/environments/cloud-environment#environment-variables-and-secrets) are a different mechanism and are removed before the agent phase.
+No. Codex invokes `secenv ask`; Workbench in Obsidian is the trusted value-entry UI. Codex receives only redacted state. [Official Codex cloud secrets](https://learn.chatgpt.com/docs/environments/cloud-environment#environment-variables-and-secrets) are a different mechanism and are removed before the agent phase.
 
-## What happens if Can Workbench is closed?
+## What happens if Workbench is closed?
 
 Credential-dependent work stops or waits until request expiry. The system does not fall back to chat, terminal input, or a browser link. Start/repair Workbench and repeat with a fresh request.
 
@@ -34,7 +34,7 @@ No. Credential collection and the action that consumes it are separate approval 
 
 ## Do I need Obsidian?
 
-The project/task/agent patterns also work as plain Markdown. The current secure-input UI specifically requires desktop Obsidian + Can Workbench. Without it, do not use credential-dependent workflows until you implement and review an equivalent trusted native path.
+The project/task/agent patterns also work as plain Markdown. The current secure-input UI specifically requires desktop Obsidian + Workbench. Without it, do not use credential-dependent workflows until you implement and review an equivalent trusted native path.
 
 ## Do I need Coder or a VPS?
 

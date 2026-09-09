@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'integrations/can-workbench/source'
+SOURCE = ROOT / 'integrations/workbench/source'
 LOCK = json.loads((SOURCE.parent / 'source-lock.json').read_text())
 
 def verify():

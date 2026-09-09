@@ -16,11 +16,11 @@ Classification follows the most sensitive fact in the file. A public template co
 ## Secret intake
 
 - Never paste a secret into chat, a prompt, a command argument, terminal scrollback, an issue, a commit, a screenshot, or a note.
-- Keep the durable source in a password manager or OS keychain, but enter values for agent work only through `secenv ask` and the native Can Workbench modal, which writes directly to the declared owner-only destination.
+- Keep the durable source in a password manager or OS keychain, but enter values for agent work only through `secenv ask` and the native Workbench modal, which writes directly to the declared owner-only destination.
 - Before creating a credential, define provider, account/project, exact purpose, minimum scopes, resource restrictions, environment, lifetime, and consumer.
 - Prefer short-lived, resource-scoped, non-production credentials.
 - Verify only non-secret facts: file ownership/mode, expected variable names, and a minimal authentication check.
-- If `secenv`/Can Workbench is unavailable, stop and repair it; there is no browser, chat, or terminal fallback. If a secret appears in an unsafe channel, treat it as exposed and rotate it.
+- If `secenv`/Workbench is unavailable, stop and repair it; there is no browser, chat, or terminal fallback. If a secret appears in an unsafe channel, treat it as exposed and rotate it.
 
 ## Authority ladder
 

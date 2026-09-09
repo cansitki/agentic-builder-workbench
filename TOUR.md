@@ -54,7 +54,7 @@ secenv doctor
 secenv ask --schema reviewed-request.json
 ```
 
-Can Workbench opens a native Obsidian modal showing the origin and declared destinations. You enter the value there. It is encrypted locally, transported as ciphertext, installed `0600`, and the agent receives only redacted status.
+Workbench opens a native Obsidian modal showing the origin and declared destinations. You enter the value there. It is encrypted locally, transported as ciphertext, installed `0600`, and the agent receives only redacted status.
 
 If the route is unavailable, work stops. There is no chat, terminal, screenshot, or browser-link fallback. Secure collection still does not authorize the later deployment/transaction.
 

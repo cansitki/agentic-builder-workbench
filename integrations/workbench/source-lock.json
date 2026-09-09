@@ -1,0 +1,29 @@
+{
+  "name": "Workbench",
+  "version": "3.0.0",
+  "upstream": {
+    "repository": "https://github.com/cansitki/can-workbench",
+    "commit": "e09d8a0b8e2af60405aa05b4477850f88f8dd995",
+    "version": "2.2.0"
+  },
+  "files": {
+    "build.py": "1e156692feea70761af05914df44918645baed16a42add3d72a320b6a458a8cb",
+    "main.js": "e2288ae4fb7690f6c0c2b6a711760c12148e7386515176aa12ded23f94fc298b",
+    "manifest.json": "1fb2507bc71037d5c5dbc91f1604755560e6d60eb93ad7a8d5a28b6f1350068f",
+    "modules/countdown.js": "a91f08ac1fcda9f7db106510d6639bf6caccf8a138bdfd629e29678d5a20c165",
+    "modules/excalidraw-live-text.js": "4203edc17fe31b39fa18246fb5923ddffb8be29a9e85d6f5d2cfce024932a570",
+    "modules/orchestrator.js": "05de062ba631f8e1665be969eb9b32669ef22913c2aa7e23d5e952f9e0f6add8",
+    "modules/secure-input.js": "a27ea05e7f8d04e64c694c2fe0f0eb12476b5c7375fa8af285aaaeb750c1ef26",
+    "modules/vm-connect.js": "b846009097f327abbb2f1d9ac3729944a043ae2ff4c353f0335b566b5765bbaa",
+    "pty-helper.py": "c6f5d74962b4fc0ce934498aaf65016a434ee9a8c67f5f975c1253443fcf63f2",
+    "scripts/verify-portable-defaults.js": "81e92634b2167a648f7f361c73694d2bb7af6a83a859c9d3c356d1652fbc566c",
+    "scripts/verify-secure-input.js": "5f445c327ce62a1339841724b02b4671ef2b8548a5b379f92b228c640cef39c5",
+    "scripts/verify-workbench.js": "ef37dc8807b589f8a3f1cc2215caaa2c4895e3b7b2b56c13bfa2b4d06b545823",
+    "styles.css": "0a4d60b8835a52099814e1de863815147fe6cb8ed89bc1c96f978d8889c4b6db",
+    "vendor/gsd-control/main.js": "80e94be16dace3958037ee1a4906c6f13cdb6b20f1465550e63baadf0ee36491",
+    "vendor/gsd-control/styles.css": "d8a8d022f8a17e4aee961fb88a7a0b4680a9b77e1cd475ecb2076fbced9be5ed",
+    "vendor/internetvin-terminal/main.js": "f9a9a539e379ca657b0454d953360503ce539787ae80c90e3ca896acefb0e50f",
+    "vendor/internetvin-terminal/styles.css": "78c673131cf4bb3a085c2f8aacda22ce78b3fc87d09a1dfcb5080a06db4b6e4d"
+  },
+  "note": "Reviewed portable derivative; upstream personal settings and instructions excluded. See SOURCE.md."
+}

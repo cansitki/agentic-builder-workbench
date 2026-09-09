@@ -1,5 +1,5 @@
 /*
- * Countdown Bar module — runs inside can-workbench.
+ * Countdown Bar module — runs inside workbench.
  *
  * Floating countdown widget in top-right corner. Shows days/hours/minutes
  * until configured dates. Draggable. Click to open settings.
@@ -24,7 +24,7 @@ class CountdownModule {
 
   async load() {
     // Point `this.settings` at the parent plugin's countdown subobject so
-    // any edits made from the main Can Workbench settings tab are seen
+    // any edits made from the main Workbench settings tab are seen
     // live by this module without a reload. Initialize missing keys with
     // defaults in place.
     if (!this.plugin.settings.countdown) this.plugin.settings.countdown = {};
@@ -67,7 +67,7 @@ class CountdownModule {
 
     this.updateInterval = setInterval(() => this.render(), 30000);
 
-    // Countdown settings are rendered inside the main Can Workbench
+    // Countdown settings are rendered inside the main Workbench
     // settings tab (see _renderCountdowns in build.py) — no separate tab.
 
     this.plugin.addCommand({
@@ -80,7 +80,7 @@ class CountdownModule {
           emoji: ''
         });
         await this.saveSettings();
-        new Notice('Added — edit in Settings → Can Workbench → Countdown');
+        new Notice('Added — edit in Settings → Workbench → Countdown');
       }
     });
   }

@@ -1,8 +1,8 @@
 # Exact false positives: bundled xterm FourKeyMap = TwoKeyMap assignment.
 # Source inventory/hashes are verified by scripts/verify-workbench-source.py.
-integrations/can-workbench/source/vendor/gsd-control/main.js:generic-api-key:3490
-integrations/can-workbench/source/vendor/internetvin-terminal/main.js:generic-api-key:3485
-integrations/can-workbench/source/main.js:generic-api-key:5677
-integrations/can-workbench/source/vendor/gsd-control/main.js:generic-api-key:6739
-integrations/can-workbench/source/main.js:generic-api-key:14379
-integrations/can-workbench/source/main.js:generic-api-key:17628
+integrations/workbench/source/vendor/gsd-control/main.js:generic-api-key:3490
+integrations/workbench/source/vendor/internetvin-terminal/main.js:generic-api-key:3485
+integrations/workbench/source/vendor/gsd-control/main.js:generic-api-key:6739
+integrations/workbench/source/main.js:generic-api-key:5687
+integrations/workbench/source/main.js:generic-api-key:14389
+integrations/workbench/source/main.js:generic-api-key:17638

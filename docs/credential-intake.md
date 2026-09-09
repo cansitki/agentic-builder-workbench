@@ -1,6 +1,6 @@
 # Credential Intake
 
-This workbench has one approved credential value-entry path: `secenv ask` through the native Can Workbench modal. It never exposes the value to the conversation or general terminal history.
+This workbench has one approved credential value-entry path: `secenv ask` through the native Workbench modal. It never exposes the value to the conversation or general terminal history.
 
 ## Before requesting a credential
 
@@ -20,7 +20,7 @@ If the provider's permission model may have changed, verify current official doc
 
 ## Collection boundary
 
-The agent initiates `secenv ask`, keeps it running, and waits for submit, cancel, or expiry. Can Workbench shows the request metadata and destination before accepting values, encrypts them locally, and returns a ciphertext envelope. The agent must not ask the user to paste the value into:
+The agent initiates `secenv ask`, keeps it running, and waits for submit, cancel, or expiry. Workbench shows the request metadata and destination before accepting values, encrypts them locally, and returns a ciphertext envelope. The agent must not ask the user to paste the value into:
 
 - chat or prompts;
 - shell arguments or `read` prompts;
@@ -29,7 +29,7 @@ The agent initiates `secenv ask`, keeps it running, and waits for submit, cancel
 - notes, screenshots, tickets, email, or messaging apps;
 - an agent-created web form.
 
-If `secenv`, Can Workbench, its listener, or the native modal is unavailable, repair it or stop credential-dependent work. Password managers remain the long-term source, but copying a value from them into any other intake surface is forbidden.
+If `secenv`, Workbench, its listener, or the native modal is unavailable, repair it or stop credential-dependent work. Password managers remain the long-term source, but copying a value from them into any other intake surface is forbidden.
 
 ## After collection
 

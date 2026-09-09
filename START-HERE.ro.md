@@ -1,19 +1,20 @@
-# Can Workbench — lista completă și ordinea de pornire
+# Workbench — lista completă și ordinea de pornire
 
 Acesta este pachetul de transfer al sistemului de lucru. Include pluginul Obsidian
 cu sursa și bundle-ul folosit la audit, runtime-ul `secenv`, brainul, structura
 vaultului, structura proiectelor, procedurile și probele de verificare.
 
 Data inventarului: **9 septembrie 2026, Europe/Bucharest**.
-Codul pluginului a fost comparat cu instalarea accesibilă: cele trei artefacte
-de release au hashuri identice. Calculatorul destinatarului nu a fost încă testat.
+Versiunea 3.0.0 este derivata portabilă Workbench: fără username sau workspace-uri
+precompletate. Hashurile descriu această versiune, nu instalarea veche. Calculatorul
+destinatarului nu a fost încă testat. Vezi [rolul fiecărei componente](COMPONENTS.ro.md).
 
 ## 1. Ce deschizi efectiv
 
 | Ordine | Aplicație / suprafață | Unde și pentru ce |
 |---|---|---|
 | 1 | Obsidian Desktop | Pe calculatorul principal, deschizi vaultul propriu |
-| 2 | Can Workbench, în Obsidian | Conexiuni, proiecte, fișiere, terminale și modal securizat |
+| 2 | Workbench, în Obsidian | Conexiuni, proiecte, fișiere, terminale și modal securizat |
 | 3 | Terminalul proiectului din Workbench | Alegi conexiunea Local / Coder / SSH, apoi folderul proiectului |
 | 4 | Codex în acel terminal | Agentul citește brainul, TODO-ul și instrucțiunile proiectului |
 | 5 | Browser | Preview-ul aplicației, documentație și GitHub; dashboardul Coder pentru administrare |
@@ -29,7 +30,7 @@ backupul sau autentificările proprii. Pentru fluxul Local nu este necesar un VP
 | Componentă | Rol | Obligatoriu / condiționat | Ce există în repo |
 |---|---|---|---|
 | Obsidian Desktop | Vault și interfață nativă | Obligatoriu pentru secure intake | Template vault și ghid |
-| Can Workbench 2.2.0 | Terminal, fișiere, workspace, input | Obligatoriu | Sursă, bundle, hashuri, installer offline |
+| Workbench 3.0.0 | Terminal, fișiere, workspace, input | Obligatoriu | Sursă, bundle, hashuri, installer offline |
 | Codex | Agentul de coding | Obligatoriu pentru varianta Codex | Config exemplu și instrucțiuni |
 | Git | Versiuni și recuperare | Obligatoriu | Repo, checks și workflow |
 | GitHub / gh | Remote și review | GitHub pentru acest repo; `gh` pentru administrare | Proceduri; cont propriu |
@@ -56,14 +57,15 @@ Uneltele externe se instalează din sursele lor oficiale. Urmează
 
 ## 3. Pluginuri Obsidian
 
-**Can Workbench** este pluginul comunitar activ confirmat în workspace-ul auditat.
+**Workbench** este pluginul livrat în acest pachet. Instalarea veche din mediul
+sursă este distinctă și nu a fost migrată automat.
 Nu trebuie instalate separat componentele integrate `vm-connect`, `countdown`,
 `excalidraw-live-text`, `internetvin-terminal` și `gsd-control`.
 
-În Settings → Community plugins activezi Can Workbench. Configurezi conexiunea
+În Settings → Community plugins activezi Workbench. Configurezi conexiunea
 proprie, username-ul Coder explicit, directoarele absolute ale proiectelor și
 workspace-ul pentru listenerul secure input. Vezi
-[limitele versiunii incluse](integrations/can-workbench/SOURCE.md).
+[limitele versiunii incluse](integrations/workbench/SOURCE.md).
 
 În core plugins configurezi **Daily notes** cu folderul `daily notes` și formatul
 `YYYY-MM-DD`; păstrezi **Templates** dacă folosești template-uri prin UI. Search,
@@ -90,7 +92,7 @@ Biblioteca Vibecoding Security este material de referință, nu un skill executa
 
 ```text
 operator device
-  Obsidian + Can Workbench + browser
+  Obsidian + Workbench + browser
   own vault / own connection settings
 
 work workspace
@@ -138,7 +140,8 @@ metadata obligatorie per credential și teste de criptare/instalare.
 
 Această completare pune efectiv sursa pluginului în același repo, permite
 instalarea pluginului fără download de release și adaugă inventarul operatorului
-și o recepție de paritate. Acesta este un rezumat al deciziilor de transfer;
+și o recepție de paritate. Versiunea 3.0.0 redenumește pluginul și corectează defaulturile personale.
+Acesta este un rezumat al deciziilor de transfer;
 conversațiile și daily notes private nu sunt distribuite colaboratorilor.
 
 ## 7. Toad și Volta
