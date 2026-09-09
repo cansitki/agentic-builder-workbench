@@ -159,6 +159,7 @@ def store_submission(request_id: str, stream: BinaryIO) -> Path:
         raise ValueError("request already has a submission") from exc
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            os.fchmod(handle.fileno(), 0o600)
             json.dump(envelope, handle, indent=2, sort_keys=True)
             handle.write("\n")
             handle.flush()
@@ -166,7 +167,6 @@ def store_submission(request_id: str, stream: BinaryIO) -> Path:
     except Exception:
         path.unlink(missing_ok=True)
         raise
-    path.chmod(0o600)
     return path
 
 
@@ -193,11 +193,11 @@ def cancel_request(request_id: str) -> Path:
     except FileExistsError:
         return path
     with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        os.fchmod(handle.fileno(), 0o600)
         json.dump(payload, handle, indent=2, sort_keys=True)
         handle.write("\n")
         handle.flush()
         os.fsync(handle.fileno())
-    path.chmod(0o600)
     return path
 
 

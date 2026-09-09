@@ -4,6 +4,8 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
+command -v rg >/dev/null || { echo "ripgrep is required for publication checks" >&2; exit 1; }
+
 failed=0
 rg_excludes=(
   --glob '!**/.git/**'

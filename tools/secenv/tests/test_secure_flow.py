@@ -27,6 +27,7 @@ from secenv_collector.schema import (
 )
 from secenv_collector.workbench import (
     cancellation_path,
+    cancel_request,
     pending_requests,
     request_is_expired,
     request_path,
@@ -362,6 +363,26 @@ class SecureFlowTest(unittest.TestCase):
             self.assertNotIn(secret_value, backups[0].read_text())
             self.assertFalse(request_file.exists())
             self.assertEqual(list((state_root / "submissions").glob("*.json")), [])
+
+    def test_cancel_succeeds_when_waiter_immediately_removes_marker(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            req = root / "request.json"
+            req.write_text("{}")
+            marker = root / "cancelled.json"
+            real_fsync = os.fsync
+
+            def consume_marker(fd):
+                real_fsync(fd)
+                self.assertEqual(stat.S_IMODE(os.fstat(fd).st_mode), 0o600)
+                marker.unlink()
+
+            with patch("secenv_collector.workbench.request_path", return_value=req), \
+                 patch("secenv_collector.workbench.submission_path", return_value=root / "submission.json"), \
+                 patch("secenv_collector.workbench.cancellation_path", return_value=marker), \
+                 patch("secenv_collector.workbench.os.fsync", side_effect=consume_marker):
+                self.assertEqual(cancel_request("demo-request"), marker)
+            self.assertFalse(marker.exists())
 
     def test_cancel_stops_ask_and_installs_nothing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

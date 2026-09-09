@@ -57,6 +57,7 @@ def _private_json_create(path: Path, payload: dict) -> None:
     descriptor = os.open(path, flags, 0o600)
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            os.fchmod(handle.fileno(), 0o600)
             json.dump(payload, handle, indent=2, sort_keys=True)
             handle.write("\n")
             handle.flush()
@@ -64,7 +65,6 @@ def _private_json_create(path: Path, payload: dict) -> None:
     except Exception:
         path.unlink(missing_ok=True)
         raise
-    path.chmod(0o600)
 
 
 def _parse_field_spec(
