@@ -12,13 +12,18 @@ It intentionally contains no production credentials, personal notes, customer da
 - One canonical task list instead of scattered TODO files.
 - A vault structure for daily logs, durable notes, project hubs, decisions, and research.
 - A repeatable loop from idea → spec → implementation → verification → durable memory.
-- Safe Codex defaults and five small reusable skills.
+- Safe Codex defaults and eight reusable skills.
 - A functional `secenv ask` runtime plus verified Can Workbench installation for native encrypted credential intake.
 - General architecture blueprints for web apps, Telegram bots, and crypto projects.
 - A substantial vibe-coding security library with private-use terms.
 - A publication audit that rejects common secrets and source-specific private material.
 
 ## Start here
+
+For the full operator inventory and transfer receipt, read
+[START-HERE.ro.md](START-HERE.ro.md), [SKILLS.ro.md](SKILLS.ro.md), and
+[PARITY.ro.md](PARITY.ro.md). The exact reviewed plugin source and release assets
+are included under `integrations/can-workbench/source/`.
 
 1. Read the [ten-minute system tour](TOUR.md), [Romanian quickstart](QUICKSTART.ro.md), [capability catalog](CAPABILITIES.md), [FAQ](FAQ.md), or [guided onboarding](ONBOARDING.md).
 2. Follow the [full installation sequence](INSTALL.md) when you are ready to adopt it.

@@ -22,7 +22,7 @@ bash scripts/verify-all.sh
 
 No provider credential is needed for repository validation.
 
-For the networked installer test (pinned GitHub release download plus isolated secenv installation):
+For the installer test (offline pinned plugin copy plus networked isolated secenv installation):
 
 ```bash
 bash scripts/test-installers.sh
@@ -74,7 +74,7 @@ For an existing vault, do not copy blindly. Search/merge canonical TODO, daily-f
 bash scripts/install-can-workbench.sh /absolute/path/to/ObsidianVault
 ```
 
-The installer downloads public Can Workbench v2.2.0 assets and accepts them only when all pinned SHA-256 values match. It refuses an existing plugin directory.
+The installer uses the included Can Workbench v2.2.0 snapshot offline. It requires the complete source inventory and pinned release hashes to match and refuses an existing plugin directory. Read `integrations/can-workbench/SOURCE.md` for defaults requiring explicit configuration.
 
 Enable the plugin in Obsidian, then configure only your own Local/Coder/SSH connection and explicit secure-input workspace.
 

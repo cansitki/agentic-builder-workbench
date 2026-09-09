@@ -12,7 +12,7 @@ Can Workbench turns Obsidian Desktop into the operator surface for this system. 
 - Excalidraw live-text support.
 - Native encrypted secure-input modal.
 
-The private repository installs the verified public [v2.2.0 release](https://github.com/cansitki/can-workbench/releases/tag/v2.2.0), source commit `e09d8a0b8e2af60405aa05b4477850f88f8dd995`, by pinned SHA-256; it never copies local `data.json`, workspace names, connection routes, tokens, PEM files, or settings.
+The private repository installs the verified public [v2.2.0 release](https://github.com/cansitki/can-workbench/releases/tag/v2.2.0), source commit `e09d8a0b8e2af60405aa05b4477850f88f8dd995`, by pinned SHA-256 from the included source snapshot (see `integrations/can-workbench/SOURCE.md`); it never copies local `data.json`, workspace names, connection routes, tokens, PEM files, or settings.
 
 ## Source/build rule
 

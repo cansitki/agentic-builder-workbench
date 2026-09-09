@@ -1,0 +1,1187 @@
+/**
+ * Copyright (c) 2014 The xterm.js authors. All rights reserved.
+ * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
+ * https://github.com/chjj/term.js
+ * @license MIT
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * Originally forked from (with the author's permission):
+ *   Fabrice Bellard's javascript vt100 for jslinux:
+ *   http://bellard.org/jslinux/
+ *   Copyright (c) 2011 Fabrice Bellard
+ *   The original design remains. The terminal itself
+ *   has been extended to include xterm CSI codes, among
+ *   other features.
+ */
+
+/**
+ *  Default styles for xterm.js
+ */
+
+.xterm {
+    cursor: text;
+    position: relative;
+    user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+.xterm.focus,
+.xterm:focus {
+    outline: none;
+}
+
+.xterm .xterm-helpers {
+    position: absolute;
+    top: 0;
+    /**
+     * The z-index of the helpers must be higher than the canvases in order for
+     * IMEs to appear on top.
+     */
+    z-index: 5;
+}
+
+.xterm .xterm-helper-textarea {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    /* Move textarea out of the screen to the far left, so that the cursor is not visible */
+    position: absolute;
+    opacity: 0;
+    left: -9999em;
+    top: 0;
+    width: 0;
+    height: 0;
+    z-index: -5;
+    /** Prevent wrapping so the IME appears against the textarea at the correct position */
+    white-space: nowrap;
+    overflow: hidden;
+    resize: none;
+}
+
+.xterm .composition-view {
+    /* TODO: Composition position got messed up somewhere */
+    background: #000;
+    color: #FFF;
+    display: none;
+    position: absolute;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.xterm .composition-view.active {
+    display: block;
+}
+
+.xterm .xterm-viewport {
+    /* On OS X this is required in order for the scroll bar to appear fully opaque */
+    background-color: #000;
+    overflow-y: scroll;
+    cursor: default;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.xterm .xterm-screen {
+    position: relative;
+}
+
+.xterm .xterm-screen canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.xterm .xterm-scroll-area {
+    visibility: hidden;
+}
+
+.xterm-char-measure-element {
+    display: inline-block;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: -9999em;
+    line-height: normal;
+}
+
+.xterm.enable-mouse-events {
+    /* When mouse events are enabled (eg. tmux), revert to the standard pointer cursor */
+    cursor: default;
+}
+
+.xterm.xterm-cursor-pointer,
+.xterm .xterm-cursor-pointer {
+    cursor: pointer;
+}
+
+.xterm.column-select.focus {
+    /* Column selection mode */
+    cursor: crosshair;
+}
+
+.xterm .xterm-accessibility:not(.debug),
+.xterm .xterm-message {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 10;
+    color: transparent;
+    pointer-events: none;
+}
+
+.xterm .xterm-accessibility-tree:not(.debug) *::selection {
+  color: transparent;
+}
+
+.xterm .xterm-accessibility-tree {
+  user-select: text;
+  white-space: pre;
+}
+
+.xterm .live-region {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.xterm-dim {
+    /* Dim should not apply to background, so the opacity of the foreground color is applied
+     * explicitly in the generated class and reset to 1 here */
+    opacity: 1 !important;
+}
+
+.xterm-underline-1 { text-decoration: underline; }
+.xterm-underline-2 { text-decoration: double underline; }
+.xterm-underline-3 { text-decoration: wavy underline; }
+.xterm-underline-4 { text-decoration: dotted underline; }
+.xterm-underline-5 { text-decoration: dashed underline; }
+
+.xterm-overline {
+    text-decoration: overline;
+}
+
+.xterm-overline.xterm-underline-1 { text-decoration: overline underline; }
+.xterm-overline.xterm-underline-2 { text-decoration: overline double underline; }
+.xterm-overline.xterm-underline-3 { text-decoration: overline wavy underline; }
+.xterm-overline.xterm-underline-4 { text-decoration: overline dotted underline; }
+.xterm-overline.xterm-underline-5 { text-decoration: overline dashed underline; }
+
+.xterm-strikethrough {
+    text-decoration: line-through;
+}
+
+.xterm-screen .xterm-decoration-container .xterm-decoration {
+	z-index: 6;
+	position: absolute;
+}
+
+.xterm-screen .xterm-decoration-container .xterm-decoration.xterm-decoration-top-layer {
+	z-index: 7;
+}
+
+.xterm-decoration-overview-ruler {
+    z-index: 8;
+    position: absolute;
+    top: 0;
+    right: 0;
+    pointer-events: none;
+}
+
+.xterm-decoration-top {
+    z-index: 2;
+    position: relative;
+}
+
+/* ── GSD Control Plugin Styles ─────────────────────────────────────────── */
+
+.gsd-terminal-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-primary);
+    position: relative;
+}
+
+/* ── Search bar overlay ───────────────────────────────────────────────── */
+
+.gsd-search-bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.gsd-search-input {
+    width: 180px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-family: var(--font-monospace);
+    color: var(--text-normal);
+    background: var(--background-modifier-form-field);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    outline: none;
+}
+
+.gsd-search-input:focus {
+    border-color: var(--interactive-accent);
+    box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb, 249, 115, 22), 0.2);
+}
+
+.gsd-search-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    min-width: 50px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.gsd-search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    font-size: 11px;
+    line-height: 1;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.gsd-search-btn:hover {
+    color: var(--text-normal);
+    background: var(--background-modifier-hover);
+    border-color: var(--background-modifier-border);
+}
+
+.gsd-search-close {
+    font-size: 13px;
+    margin-left: 2px;
+}
+
+.gsd-terminal-host {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Override xterm viewport background to respect Obsidian theme */
+.gsd-terminal-host .xterm .xterm-viewport {
+    background-color: transparent;
+}
+
+/* Settings tab styles */
+.gsd-workspace-section {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.gsd-workspace-section h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: var(--text-normal);
+}
+
+.gsd-workspace-section h5 {
+    margin-top: 12px;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.gsd-project-row .setting-item {
+    border-top: none;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+/* Status banner inside terminal view before connection */
+.gsd-terminal-banner {
+    padding: 16px;
+    color: var(--text-muted);
+    font-family: var(--font-monospace);
+    font-size: 0.9em;
+}
+
+/* ── GSD Status Dashboard ──────────────────────────────────────────────── */
+
+.gsd-status-container {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.gsd-status-card {
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+/* ── Urgency dot ── */
+
+.gsd-urgency-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--text-muted);
+}
+
+.gsd-urgency-error .gsd-urgency-dot {
+    background: var(--text-error);
+}
+
+.gsd-urgency-warning .gsd-urgency-dot {
+    background: #d4a843;
+}
+
+.gsd-urgency-active .gsd-urgency-dot {
+    background: var(--interactive-accent);
+}
+
+.gsd-urgency-complete .gsd-urgency-dot {
+    background: var(--interactive-accent);
+    opacity: 0.5;
+}
+
+.gsd-urgency-idle .gsd-urgency-dot {
+    background: var(--text-muted);
+}
+
+/* ── Card layout ── */
+
+.gsd-status-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.gsd-status-project-name {
+    font-weight: 600;
+    font-size: 1.05em;
+    color: var(--text-normal);
+}
+
+.gsd-status-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-size: 0.85em;
+}
+
+.gsd-status-label {
+    color: var(--text-muted);
+}
+
+/* ── Progress bar ── */
+
+.gsd-status-progress {
+    height: 4px;
+    background: var(--background-modifier-border);
+    border-radius: 2px;
+    margin: 6px 0;
+    overflow: hidden;
+}
+
+.gsd-status-progress-fill {
+    height: 100%;
+    background: var(--interactive-accent);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* ── Tmux sessions ── */
+
+.gsd-status-sessions {
+    margin-top: 8px;
+    border-top: 1px solid var(--background-modifier-border);
+    padding-top: 6px;
+}
+
+.gsd-status-session-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82em;
+    padding: 3px 0;
+}
+
+/* ── Action buttons ── */
+
+.gsd-status-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.gsd-status-btn {
+    padding: 4px 10px;
+    font-size: 0.82em;
+    border-radius: 4px;
+    border: 1px solid var(--interactive-accent);
+    background: transparent;
+    color: var(--interactive-accent);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.gsd-status-btn:hover {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+}
+
+.gsd-status-btn-danger {
+    border-color: var(--text-error);
+    color: var(--text-error);
+}
+
+.gsd-status-btn-danger:hover {
+    background: var(--text-error);
+    color: var(--text-on-accent);
+}
+
+/* ── Terminal preview ── */
+
+.gsd-status-preview {
+    font-family: var(--font-monospace);
+    font-size: 0.78em;
+    color: var(--text-faint);
+    background: var(--background-primary);
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin-top: 8px;
+    max-height: 80px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* ── Badges ── */
+
+.gsd-status-badge {
+    display: inline-block;
+    font-size: 0.75em;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: var(--background-modifier-border);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.gsd-status-badge-attached {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    opacity: 0.85;
+}
+
+/* ── Empty state ── */
+
+.gsd-status-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 0.9em;
+    text-align: center;
+    padding: 24px;
+}
+
+/* ── GSD Explorer View ─────────────────────────────────────────────────── */
+
+/* Root: flex-row two-panel layout, full height, no overflow */
+.gsd-explorer-root {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+    background: var(--background-primary);
+}
+
+/* ── Explorer Left Panel: Session / Project List ── */
+
+.gsd-explorer-session-list {
+    width: 200px;
+    min-width: 160px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--background-modifier-border);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* List header (title row) */
+.gsd-explorer-list-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 6px;
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Workspace group label (shown when >1 workspace) */
+.gsd-explorer-list-workspace-label {
+    padding: 6px 10px 2px;
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+}
+
+/* Individual project/session row */
+.gsd-explorer-list-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 1px 4px;
+    user-select: none;
+}
+
+.gsd-explorer-list-row:hover {
+    background: var(--background-modifier-hover);
+}
+
+.gsd-explorer-list-row.is-active {
+    background: var(--background-modifier-active-hover, var(--background-modifier-hover));
+}
+
+/* Folder/project icon in list row */
+.gsd-explorer-list-icon {
+    width: 16px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* Project name label */
+.gsd-explorer-list-name {
+    flex: 1;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-normal);
+}
+
+/* Empty state inside left list */
+.gsd-explorer-list-empty {
+    padding: 16px 12px;
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ── Explorer Right Panel: Detail / File Browser ── */
+
+.gsd-explorer-detail-panel {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* Empty state when no project is selected */
+.gsd-explorer-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 0.9em;
+    text-align: center;
+    padding: 24px;
+}
+
+.gsd-explorer-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    height: 36px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    background: var(--background-secondary);
+    flex-shrink: 0;
+}
+
+.gsd-explorer-btn {
+    padding: 2px 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 1.2;
+}
+
+.gsd-explorer-btn:hover {
+    color: var(--text-normal);
+    background: var(--background-modifier-hover);
+    border-color: var(--background-modifier-border);
+}
+
+.gsd-explorer-btn-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.gsd-explorer-breadcrumbs {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    overflow-x: auto;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.gsd-explorer-breadcrumbs::-webkit-scrollbar {
+    display: none;
+}
+
+.gsd-explorer-crumb-sep {
+    color: var(--text-muted);
+    margin: 0 1px;
+    font-size: 11px;
+}
+
+.gsd-explorer-crumb {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.gsd-explorer-crumb:hover {
+    color: var(--text-normal);
+    background: var(--background-modifier-hover);
+}
+
+.gsd-explorer-crumb-active {
+    color: var(--text-normal);
+    font-weight: 600;
+}
+
+.gsd-explorer-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--text-muted);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: gsd-spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+.gsd-explorer-spinner-lg {
+    width: 20px;
+    height: 20px;
+}
+
+@keyframes gsd-spin {
+    to { transform: rotate(360deg); }
+}
+
+.gsd-explorer-content {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* ── State screens (error, empty, loading) ── */
+
+.gsd-explorer-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 24px;
+    text-align: center;
+}
+
+.gsd-explorer-state-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.gsd-explorer-state-title {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 4px 0;
+}
+
+.gsd-explorer-error-text {
+    color: var(--text-error);
+}
+
+.gsd-explorer-state-detail {
+    font-size: 11px;
+    color: var(--text-faint);
+    max-width: 300px;
+    word-break: break-word;
+    margin: 4px 0 12px;
+}
+
+/* ── File table ── */
+
+.gsd-explorer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.gsd-explorer-table thead {
+    position: sticky;
+    top: 0;
+    background: var(--background-secondary);
+    z-index: 1;
+}
+
+.gsd-explorer-table th {
+    text-align: left;
+    padding: 4px 8px;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.gsd-explorer-th-size {
+    text-align: right;
+    width: 70px;
+}
+
+.gsd-explorer-th-date {
+    text-align: right;
+    width: 100px;
+}
+
+.gsd-explorer-row {
+    cursor: pointer;
+    border-bottom: 1px solid var(--background-modifier-border-hover, rgba(0,0,0,0.05));
+}
+
+.gsd-explorer-row:hover {
+    background: var(--background-modifier-hover);
+}
+
+.gsd-explorer-cell-name {
+    padding: 3px 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 0;
+}
+
+.gsd-explorer-icon {
+    margin-right: 6px;
+}
+
+.gsd-explorer-name-dir {
+    color: var(--text-normal);
+}
+
+.gsd-explorer-name-file {
+    color: var(--text-muted);
+}
+
+.gsd-explorer-symlink-arrow {
+    color: var(--text-faint);
+    margin-left: 4px;
+    font-size: 10px;
+}
+
+.gsd-explorer-cell-size {
+    padding: 3px 8px;
+    text-align: right;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.gsd-explorer-cell-date {
+    padding: 3px 8px;
+    text-align: right;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* Alias — plan references .gsd-explorer-container, T01 used .gsd-explorer-root */
+.gsd-explorer-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--background-primary);
+}
+
+/* ── File preview panel ── */
+
+.gsd-explorer-preview {
+    border-top: 1px solid var(--background-modifier-border);
+    background: var(--background-secondary);
+    max-height: 45%;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.gsd-explorer-preview-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    flex-shrink: 0;
+}
+
+.gsd-explorer-preview-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.gsd-explorer-preview-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-normal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gsd-explorer-preview-size {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.gsd-explorer-preview-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: var(--background-modifier-border);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.gsd-explorer-preview-content {
+    flex: 1;
+    overflow: auto;
+    padding: 8px;
+    font-family: var(--font-monospace);
+    font-size: 12px;
+}
+
+.gsd-explorer-preview-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 60px;
+    gap: 8px;
+}
+
+.gsd-explorer-preview-msg {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.gsd-explorer-preview-code {
+    margin: 0;
+    padding: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+    color: var(--text-normal);
+    line-height: 1.5;
+    user-select: text;
+    -webkit-user-select: text;
+    cursor: text;
+}
+.gsd-explorer-preview-code::selection {
+    background: var(--text-selection);
+}
+
+/* ── GSD Status Two-Panel Layout ───────────────────────────────────────── */
+
+/* Root: flex-row, full height, no overflow */
+.gsd-status-root {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Left panel: fixed-width scrollable session list */
+.gsd-status-session-list {
+    width: 200px;
+    min-width: 160px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--background-modifier-border);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* List header: title + refresh icon */
+.gsd-status-list-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 6px;
+    flex-shrink: 0;
+}
+
+.gsd-status-list-title {
+    font-weight: 600;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Refresh icon button */
+.gsd-status-list-refresh {
+    cursor: pointer;
+    color: var(--text-muted);
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    opacity: 0.7;
+}
+
+.gsd-status-list-refresh:hover {
+    color: var(--text-normal);
+    background: var(--background-modifier-hover);
+    opacity: 1;
+}
+
+/* Workspace group label (shown when multiple workspaces) */
+.gsd-status-list-workspace-label {
+    padding: 6px 10px 2px;
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+}
+
+/* Individual project row */
+.gsd-status-list-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 1px 4px;
+    user-select: none;
+}
+
+.gsd-status-list-row:hover {
+    background: var(--background-modifier-hover);
+}
+
+.gsd-status-list-row.is-active {
+    background: var(--background-modifier-active-hover, var(--background-modifier-hover));
+}
+
+/* Urgency / status dot in left list */
+.gsd-status-list-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--text-muted);
+}
+
+/* Project name label */
+.gsd-status-list-name {
+    flex: 1;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-normal);
+}
+
+/* Pulsing green dot — auto-mode running */
+.gsd-status-list-auto {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-green, #4caf50);
+    flex-shrink: 0;
+    animation: gsd-status-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes gsd-status-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* Empty state inside left list */
+.gsd-status-list-empty {
+    padding: 16px 12px;
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+/* Right panel: flex-1 scrollable detail area */
+.gsd-status-detail-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    min-width: 0;
+}
+
+/* Empty state inside right panel */
+.gsd-status-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 0.9em;
+    text-align: center;
+    padding: 24px;
+}
+
+/* Section title inside detail card */
+.gsd-status-section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+/* Dashboard grid: show all project cards in a responsive grid */
+.gsd-status-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    padding: 12px;
+    width: 100%;
+}
+.gsd-status-dashboard-grid .gsd-status-card {
+    min-height: 160px;
+}
+
+/* Top toolbar for dashboard */
+.gsd-status-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+.gsd-status-toolbar-title {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-normal);
+}
+.gsd-status-root.gsd-status-root {
+    display: block !important;
+    grid-template-columns: none !important;
+}
+
+/* Milestone status indicators */
+.gsd-status-complete {
+    color: var(--color-green);
+    font-weight: 500;
+}
+.gsd-status-muted {
+    color: var(--text-faint);
+    font-style: italic;
+}
+
+/* Copy button success state */
+.gsd-explorer-btn-success {
+    color: var(--color-green) !important;
+    border-color: var(--color-green) !important;
+}

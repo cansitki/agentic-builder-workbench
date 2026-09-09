@@ -18,7 +18,7 @@ if [[ -e "$plugin_path" ]]; then
   exit 1
 fi
 
-for command_name in awk curl find install mktemp mv; do
+for command_name in awk python3 find install mktemp mv; do
   command -v "$command_name" >/dev/null 2>&1 || {
     printf 'Missing required command: %s\n' "$command_name" >&2
     exit 1
@@ -31,11 +31,12 @@ cleanup() {
 }
 trap cleanup EXIT
 
-release_base="https://github.com/cansitki/can-workbench/releases/download/v2.2.0"
-curl_options=(--fail --silent --show-error --location --proto '=https' --tlsv1.2 --connect-timeout 10 --max-time 120 --retry 2)
-curl "${curl_options[@]}" -o "$temp_path/main.js" "$release_base/main.js"
-curl "${curl_options[@]}" -o "$temp_path/manifest.json" "$release_base/manifest.json"
-curl "${curl_options[@]}" -o "$temp_path/styles.css" "$release_base/styles.css"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+python3 "$repo_root/scripts/verify-workbench-source.py"
+source_path="$repo_root/integrations/can-workbench/source"
+for asset in main.js manifest.json styles.css; do
+  install -m 0644 "$source_path/$asset" "$temp_path/$asset"
+done
 
 checksum() {
   if command -v sha256sum >/dev/null 2>&1; then

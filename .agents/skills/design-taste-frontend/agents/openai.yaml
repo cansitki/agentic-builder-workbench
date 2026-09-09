@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Design Taste"
+  short_description: "Contextual design for landing pages and portfolios"
+  default_prompt: "Use $design-taste-frontend to implement this page from its brief."

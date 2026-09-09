@@ -16,14 +16,14 @@ The goal is structural and operational fidelity without copying private facts. E
 | Project backlogs and hubs | project/vault templates | Templates | Included |
 | Operator surface | system map + environment guide | Guide | Included |
 | External toolchain and trust boundary | `docs/external-dependencies.md` | Guide | Included |
-| Can Workbench terminals/files/sessions/diagrams | `docs/can-workbench.md` + pinned installer | Guide + verified external release | Included |
+| Can Workbench terminals/files/sessions/diagrams | `docs/can-workbench.md` + pinned installer | Guide + included source and release | Included |
 | Work vs system workspace | workspace/session guide | Guide + inventory | Included |
 | Durable service boundary | workspace/runbook templates | Guide + template | Included |
 | Backup and restore drill | backup/cutover guide + runbook | Guide + template | Included |
 | State transfer and cutover | backup/cutover guide | Guide | Included |
 | Secure credential policy | root/full/project AGENTS | Hard gate | Included |
 | Secure credential runtime | `tools/secenv/` | Executable Python package | Included |
-| Native encrypted modal | pinned Can Workbench v2.2.0 installer | Verified external release | Included |
+| Native encrypted modal | pinned Can Workbench v2.2.0 installer | Included source and release | Included |
 | No browser/chat/terminal fallback | secenv CLI + tests + AGENTS + skill | Enforced design | Included |
 | Informed least-privilege request | secenv validation + schema + skill | Code + procedure | Included |
 | tmux naming/scope/cleanup | workspaces guide + full brain | Rule | Included |
@@ -49,7 +49,7 @@ The goal is structural and operational fidelity without copying private facts. E
 | Testing and review | test/review guide + secure release skill | Guide + skill | Included |
 | Incident handling | incident guide/template | Guide + template | Included |
 | Excalidraw geometry/visual QA | visual notes guide + full brain | Rule | Included |
-| Skills | `.agents/skills/` | Five validated skills | Included |
+| Skills | `.agents/skills/` | Eight validated skills | Included |
 | Hooks/CI/automations | automation guide/template + CI | Guide + executable check | Included |
 | MCP/connectors | connector review template | Template | Included |
 | Web architecture | web blueprint | Guide | Included |

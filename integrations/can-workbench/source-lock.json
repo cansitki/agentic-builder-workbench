@@ -1,0 +1,29 @@
+{
+  "repository": "https://github.com/cansitki/can-workbench",
+  "commit": "e09d8a0b8e2af60405aa05b4477850f88f8dd995",
+  "version": "2.2.0",
+  "files": {
+    "build.py": "84fd17e342b19d4d4c39a652ca16e36d8c58acc684559becee406701af3f4b61",
+    "main.js": "15ee29bb4fbf90b6036f26b9d844e64e694a10b38093fffa866aef24264ff1b8",
+    "manifest.json": "8a18b630740e065c3a2eec7a45ba593e909485d5843780c815bb1b05d08f4d29",
+    "modules/countdown.js": "fc64a25bef68dac5e27279bc70074b6b3d08f242e63eea0ab7c8cea330d2e99d",
+    "modules/excalidraw-live-text.js": "4b1257e2275f8aa548ab7044d5b434f250a31b737de085584d4a524d94d4e948",
+    "modules/orchestrator.js": "28ffbf14adba2b1abceede88ef22e3ca668218cd1193034f6a4893675d6ad9b4",
+    "modules/secure-input.js": "2856e9cc92922239e296ca441825b9945719f8aeff992a2e46b001ddb7643c25",
+    "modules/vm-connect.js": "46c8d0bab3b1d1b66091f9634c8f22f9ebd1dc1f93b2b18fce60a0da41bdd411",
+    "pty-helper.py": "c6f5d74962b4fc0ce934498aaf65016a434ee9a8c67f5f975c1253443fcf63f2",
+    "scripts/verify-can-workbench.js": "ead573ae269958fd4c695c3bd5181983f59575d1acaeb2eb9743625ac64a78d2",
+    "scripts/verify-secure-input.js": "308360cf9f94d9a0eeec363551e76997d9e2852b4a372b06bde01023c85ee860",
+    "styles.css": "afd4bbe501f1b7804485c87d1721786ac23cf8315ba1df092dd23f253f0dd500",
+    "vendor/gsd-control/main.js": "284dc803a22f454f147ed4f4e6eb8a26575f6c158dc4ad50647fb8624f5849e5",
+    "vendor/gsd-control/styles.css": "d8a8d022f8a17e4aee961fb88a7a0b4680a9b77e1cd475ecb2076fbced9be5ed",
+    "vendor/internetvin-terminal/main.js": "7543674e7426f3dd102224ec277b85169c705e587ce232b64a945d7ac965fda4",
+    "vendor/internetvin-terminal/styles.css": "78c673131cf4bb3a085c2f8aacda22ce78b3fc87d09a1dfcb5080a06db4b6e4d"
+  },
+  "omitted": [
+    "AGENTS.md",
+    ".gitignore",
+    "README.md"
+  ],
+  "note": "Exact runtime, build and verifier source; upstream personal guidance and local configuration are excluded."
+}

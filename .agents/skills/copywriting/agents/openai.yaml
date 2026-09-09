@@ -1,0 +1,4 @@
+interface:
+  display_name: "Copywriting"
+  short_description: "Write clear conversion-focused website copy"
+  default_prompt: "Use $copywriting to write clear, specific website copy for this page and its primary action."

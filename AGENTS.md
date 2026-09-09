@@ -30,6 +30,7 @@ Before changing the repository:
 - Put personal defaults in the personal template, repository facts in the project template, repeated workflows in skills, and live state in task/project notes.
 - Do not copy vendor manuals into the repository. Link to authoritative documentation and record the access date when freshness matters.
 - Preserve attribution and the private collaboration license.
+- The reviewed public Can Workbench source snapshot is a narrow provenance exception for upstream code defaults only. Its entire file inventory must match `integrations/can-workbench/source-lock.json`; private upstream AGENTS, settings, credentials, and history remain excluded. All secret scans still apply to the snapshot. Never extend this exception to local runtime data.
 
 ## File conventions
 

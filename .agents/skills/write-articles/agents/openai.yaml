@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write Articles"
+  short_description: "Research and draft credible long-form articles"
+  default_prompt: "Use $write-articles to turn this idea into a sourced, review-ready article draft."

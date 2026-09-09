@@ -58,7 +58,8 @@ unexpected_env="$(find . -type d \( -name '.git' -o -name '.venv' -o -name 'venv
 sensitive_files="$(find . -type d \( -name '.git' -o -name '.venv' -o -name 'venv' -o -name 'node_modules' -o -name 'build' -o -name 'dist' -o -name '__pycache__' \) -prune -o -type f \( -name '*.pem' -o -name '*.key' -o -name '*.p12' -o -name '*.pfx' -o -name '*.keystore' -o -name '*.jks' -o -name '*.sqlite' -o -name '*.sqlite3' -o -name '*.db' \) -print)"
 [[ -z "$sensitive_files" ]] || fail "sensitive-looking file(s): $(printf '%s' "$sensitive_files" | tr '\n' ' ')"
 
-scan_pattern "private-key material" '-----BEGIN ([A-Z ]+ )?PRIVATE KEY-----'
+# Private-key material is checked by check-private-paths.py, including source;
+# only the hash-verified upstream UI placeholder is exempted.
 scan_pattern "GitHub token shape" 'gh[pousr]_[A-Za-z0-9]{20,}'
 scan_pattern "AWS access-key shape" 'AKIA[0-9A-Z]{16}'
 scan_pattern "OpenAI key shape" 'sk-(proj-)?[A-Za-z0-9_-]{20,}'
@@ -68,7 +69,7 @@ scan_pattern "GitLab token shape" 'glpat-[A-Za-z0-9_-]{20,}'
 scan_pattern "Slack token shape" 'xox[baprs]-[A-Za-z0-9-]{10,}'
 scan_pattern "Telegram bot-token shape" '[0-9]{8,10}:[A-Za-z0-9_-]{35}'
 scan_pattern "JWT shape" 'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'
-scan_pattern "absolute user-home path" '/(home|Users)/[A-Za-z0-9._-]+/'
+python3 scripts/check-private-paths.py || failed=1
 
 security_count="$(find knowledge/vibecoding-security -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
 if (( security_count < 80 )); then
