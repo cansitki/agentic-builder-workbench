@@ -9,6 +9,10 @@ variable "timezone" {
   type    = string
   default = "UTC"
 }
+variable "owner_id" {
+  type    = string
+  default = "OWNER_ID_REQUIRED"
+}
 provider "coder" {}
 provider "docker" { host = "unix:///var/run/docker.sock" }
 data "coder_workspace" "me" {}
@@ -62,6 +66,12 @@ resource "docker_container" "workspace" {
       volume_name    = "workbench-sync-config"
       container_path = "/workspace/.config/obsidian-headless"
       read_only      = false
+    }
+  }
+  lifecycle {
+    precondition {
+      condition     = var.owner_id == data.coder_workspace_owner.me.id
+      error_message = "This personal template is restricted to the verified installation owner."
     }
   }
   networks_advanced { name = "workbench-network" }

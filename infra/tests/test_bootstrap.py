@@ -25,7 +25,7 @@ class Fake:
             if method=='GET':return (self.first_status or (200 if self.initialized else 404)),({'X-Coder-Build-Version':'2.36.4'} if self.first_status is None else {}),{}
             self.initialized=True;return 201,{},dict(user_id='fixture',organization_id='org')
         if url.endswith('/users/login'):return 201,{},dict(session_token='dummy-session-value')
-        if url.endswith('/users/me'):return 200,{},dict(username='fixture-user',roles=[{'name':'owner'}] if self.owner else [])
+        if url.endswith('/users/me'):return 200,{},dict(id='11111111-1111-4111-8111-111111111111',username='fixture-user',roles=[{'name':'owner'}] if self.owner else [])
         if '/dns_records' in url:
             if method=='GET':return 200,{},dict(success=True,result=([{'type':'A','content':'192.0.2.1'}] if self.dns else []))
             return 200,{},dict(success=True,result={'id':'dns-id'})

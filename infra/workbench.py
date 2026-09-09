@@ -197,8 +197,14 @@ def initialize_owner(bundle,client):
     token=data.get('session_token')
     if not isinstance(token,str) or not token:raise SetupError('Login returned no session')
     private_write(bundle/'credentials/coder-session',token+'\n',replace=True)
-    owner_gate(config,bundle,client)
-    save_json(bundle/'owner.receipt.json',{'username':config['coder_username'],'verified':True},replace=True)
+    me=owner_gate(config,bundle,client)
+    owner_id=me.get('id','')
+    if not re.fullmatch('[a-f0-9-]{36}',owner_id):raise SetupError('Verified owner has no valid ID')
+    template=bundle/'template/main.tf'
+    text=template.read_text()
+    if 'OWNER_ID_REQUIRED' in text:template.write_text(text.replace('OWNER_ID_REQUIRED',owner_id))
+    elif owner_id not in text:raise SetupError('Template is bound to a different owner')
+    save_json(bundle/'owner.receipt.json',{'id':owner_id,'username':config['coder_username'],'verified':True},replace=True)
     (bundle/'owner-create.pending').unlink(missing_ok=True)
     return {'status':'owner-verified','next':'Cloudflare setup may now be reviewed/applied'}
 
