@@ -10659,11 +10659,17 @@ var TerminalPicker = class extends import_obsidian5.Modal {
     const style = document.createElement("style");
     style.id = "gsd-picker-modal-styles";
     style.textContent = `
-      .modal:has(.gsd-picker-modal) { padding: 0; }
-      .gsd-picker-modal {
+      .modal:has(.gsd-picker-modal) {
+        padding: 0;
         width: min(620px, calc(100vw - 48px));
         min-width: min(520px, calc(100vw - 48px));
         max-width: calc(100vw - 48px);
+      }
+      .gsd-picker-modal {
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
         padding: 20px 20px 16px;
       }
       .gsd-picker-modal .modal-title { display: none; }
@@ -10865,8 +10871,9 @@ var TerminalPicker = class extends import_obsidian5.Modal {
 
       /* Project item — Obsidian list item style */
       .gsd-proj-item {
+        min-width: 0;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 220px);
         gap: 10px;
         align-items: center;
         padding: 8px 4px;
@@ -10890,6 +10897,7 @@ var TerminalPicker = class extends import_obsidian5.Modal {
         font-family: var(--font-monospace);
       }
       .gsd-proj-path {
+        min-width: 0;
         max-width: 220px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -11925,7 +11933,7 @@ var GSDPlugin = class extends import_obsidian6.Plugin {
     });
     this.addSettingTab(new GSDSettingsTab(this.app, this));
     this.addRibbonIcon("gsd-terminal", "Open session", () => {
-      new TerminalPicker(this.app, this).open();
+      this.openSessionPicker();
     });
     this.addRibbonIcon("activity", "Open Workspace Status", () => {
       this.openStatusView();
@@ -11958,7 +11966,7 @@ var GSDPlugin = class extends import_obsidian6.Plugin {
       id: "open-gsd-terminal-picker",
       name: "Open session picker",
       callback: () => {
-        new TerminalPicker(this.app, this).open();
+        this.openSessionPicker();
       }
     });
     this.registerEvent(
@@ -11977,6 +11985,8 @@ var GSDPlugin = class extends import_obsidian6.Plugin {
   }
   async onunload() {
     console.log("[Workbench] Unloading Workbench plugin");
+    this.activeSessionPicker?.close();
+    this.activeSessionPicker = null;
     if (this.ptyHelperPath) {
       try {
         cleanupPtyHelper(this.ptyHelperPath);
@@ -11989,6 +11999,11 @@ var GSDPlugin = class extends import_obsidian6.Plugin {
    * Returns the absolute filesystem path to the plugin directory.
    * Used by SettingsTab and TerminalView for secrets file access.
    */
+  openSessionPicker() {
+    this.activeSessionPicker?.close();
+    this.activeSessionPicker = new TerminalPicker(this.app, this);
+    this.activeSessionPicker.open();
+  }
   getPluginDir() {
     const path = require("path");
     const basePath = this.app.vault.adapter.getBasePath();
@@ -12247,7 +12262,7 @@ var GSDPlugin = class extends import_obsidian6.Plugin {
   async openTerminalView(workspaceName, projectPath, category = "") {
     // Always open the new browser modal — handles all workspace/project/session logic
     if (!workspaceName) {
-      new TerminalPicker(this.app, this).open();
+      this.openSessionPicker();
       return;
     }
     const { workspace } = this.app;

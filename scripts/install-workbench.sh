@@ -55,15 +55,15 @@ checksum() {
   fi
 }
 
-[[ "$(checksum "$temp_path/main.js")" == "2de5220b6ee92f7d002424b96931b6caeacf4f441475bca9340132857787f819" ]] || {
+[[ "$(checksum "$temp_path/main.js")" == "f217614289598689b273111c6b54bca9daf96284dfbd5b601d0d0c57f3ec33f7" ]] || {
   printf 'Workbench main.js checksum mismatch.\n' >&2
   exit 1
 }
-[[ "$(checksum "$temp_path/manifest.json")" == "dc8843a857c0bcbc560993bb63262b8a6a07dafd2a72852d5f5734b0aa279590" ]] || {
+[[ "$(checksum "$temp_path/manifest.json")" == "0c2269a57abc9287cf3a24f7a0452682e963cb0bd44a9f91292244decae95ab7" ]] || {
   printf 'Workbench manifest.json checksum mismatch.\n' >&2
   exit 1
 }
-[[ "$(checksum "$temp_path/styles.css")" == "0a4d60b8835a52099814e1de863815147fe6cb8ed89bc1c96f978d8889c4b6db" ]] || {
+[[ "$(checksum "$temp_path/styles.css")" == "67508fb37222da661b577e525398eea67cc3b70902b28fd81b2a14ab8407e71b" ]] || {
   printf 'Workbench styles.css checksum mismatch.\n' >&2
   exit 1
 }
@@ -75,5 +75,5 @@ install -m 0644 "$temp_path/manifest.json" "$staged_plugin/manifest.json"
 install -m 0644 "$temp_path/styles.css" "$staged_plugin/styles.css"
 mv "$staged_plugin" "$plugin_path"
 
-printf 'Installed verified Workbench v3.0.1 assets at %s\n' "$plugin_path"
+printf 'Installed verified Workbench v3.1.0 assets at %s\n' "$plugin_path"
 printf 'Open Obsidian, enable Workbench, configure your own Local/Coder/SSH workspace, then restart the secure-input listener.\n'

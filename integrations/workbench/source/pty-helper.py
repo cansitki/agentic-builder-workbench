@@ -1,5 +1,5 @@
-"""PTY helper for vin-terminal. Wraps zsh in a real PTY with resize support."""
-import os, select, signal, struct, fcntl, termios, pty, time
+"""PTY helper for vin-terminal. Wraps a configured POSIX shell in a real PTY with resize support."""
+import os, select, signal, struct, fcntl, termios, pty, time, shutil
 
 def main():
     cols = int(os.environ.get("VIN_TERM_COLS", "80"))
@@ -17,7 +17,12 @@ def main():
         os.dup2(slave, 2)
         if slave > 2:
             os.close(slave)
-        os.execvp("/bin/zsh", ["/bin/zsh", "-i", "-l"])
+        shell = os.environ.get("VIN_TERM_SHELL") or os.environ.get("SHELL") or "/bin/sh"
+        executable = shutil.which(shell)
+        if not executable:
+            os.write(2, b"Configured shell was not found. Check the Local connection Shell setting.\n")
+            os._exit(127)
+        os.execv(executable, [executable, "-i", "-l"])
     os.close(slave)
 
     def request_shutdown(_signum, _frame):

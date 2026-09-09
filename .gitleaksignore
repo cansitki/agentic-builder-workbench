@@ -6,3 +6,8 @@ integrations/workbench/source/vendor/gsd-control/main.js:generic-api-key:6739
 integrations/workbench/source/main.js:generic-api-key:5696
 integrations/workbench/source/main.js:generic-api-key:14398
 integrations/workbench/source/main.js:generic-api-key:17647
+
+# Exact bundled xterm FourKeyMap/TwoKeyMap false positives after upstream 3.1.0 sync.
+integrations/workbench/source/main.js:generic-api-key:6178
+integrations/workbench/source/main.js:generic-api-key:14780
+integrations/workbench/source/main.js:generic-api-key:18029

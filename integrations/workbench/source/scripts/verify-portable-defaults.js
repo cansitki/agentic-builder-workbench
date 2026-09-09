@@ -32,6 +32,13 @@ async function main() {
   const firstSaveCount = saves;
   await plugin._ensureDefaults();
   assert.equal(saves, firstSaveCount, 'defaults are idempotent');
+  plugin.modules = { gsd: { settings: { coderUser: '', vendorDefault: true } } };
+  const canonical = plugin.settings.gsd;
+  canonical.coderUser = 'a'; await plugin.saveSettings();
+  canonical.coderUser = 'ab'; await plugin.saveSettings();
+  assert.equal(plugin.settings.gsd, canonical);
+  assert.equal(plugin.modules.gsd.settings, canonical);
+  assert.equal(plugin.modules.gsd.settings.coderUser, 'ab');
   plugin.settings.gsd.coderUser = 'operator-chosen';
   plugin.settings.gsd.workspaces.push({ coderName: 'chosen-project', uploadDir: '/srv/uploads' });
   await plugin._ensureDefaults();

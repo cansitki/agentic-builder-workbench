@@ -14,6 +14,7 @@ pluginul, skill-urile, secenv și sistemul de lucru.**
 | Upload / enhancements | Trimite imagini și fișiere în workspace-ul terminalului | Upload directory absolut per conexiune; fără țintă ghicită |
 | Countdown Bar | Afișează timpul rămas până la datele alese | Titlu și dată; nu programează execuția taskurilor |
 | Excalidraw Live Text | Actualizează text din desen prin `@from(Nota)` sau `@from(Nota#Secțiune)` | Excalidraw separat și notă sursă; nu este editorul de desen |
+| Codex Alerts | Notificări macOS când Codex termină un răspuns; evenimentele sunt deduplicate | Helper notify în workspace și receptor configurat |
 | Secure Input | Primește cereri secenv, arată originea/destinația și criptează valorile în modal | Workspace explicit, listener activ; implicit dezactivat |
 | Credits | Proveniența componentelor și licențele | Fără configurare |
 

@@ -2593,3 +2593,28 @@ body.vin-middle-pages-hidden .workspace-split.mod-right-split {
         width: 100%;
     }
 }
+
+/* Workbench settings: preserve readable labels in small settings windows. */
+.workbench-settings-root { min-width: 0; }
+.workbench-settings-root input, .workbench-settings-root select { max-width: 100%; }
+.workbench-settings-root.is-compact .setting-item {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+.workbench-settings-root.is-compact .setting-item-info,
+.workbench-settings-root.is-compact .setting-item-control {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 0 auto;
+}
+.workbench-settings-root.is-compact .setting-item-control {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.workbench-settings-root.is-compact .setting-item-name,
+.workbench-settings-root.is-compact .setting-item-description {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}

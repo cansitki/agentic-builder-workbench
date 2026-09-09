@@ -18,6 +18,24 @@ function check(command, args) {
   run(command, args, { stdio: "inherit" });
 }
 
+function pythonWithTomllib() {
+  const candidates = [
+    process.env.CODEX_ATTENTION_PYTHON,
+    "python3",
+    "python3.14",
+    "python3.13",
+    "python3.12",
+    "python3.11"
+  ].filter(Boolean);
+  for (const candidate of candidates) {
+    try {
+      run(candidate, ["-c", "import tomllib"]);
+      return candidate;
+    } catch {}
+  }
+  throw new Error("Codex attention verification needs Python 3.11+ (tomllib)");
+}
+
 function assertOpenSessionMatchingSource() {
   process.stdout.write("check: open-session workspace matching source invariant\n");
   const required = [
@@ -79,6 +97,35 @@ function assertVmConnectUsesNestedSettingsHelpers() {
     ]) {
       if (source.includes(stale)) {
         throw new Error(`${file} still has direct GSD workspace access: ${stale}`);
+      }
+    }
+  }
+}
+
+function assertCodexAttentionSource() {
+  process.stdout.write("check: Codex attention source invariant\n");
+  const required = [
+    "new CodexAttentionModule(this)",
+    "Codex Alerts",
+    "agent-turn-complete",
+    "window.Notification",
+    "os.platform() === 'darwin'",
+    "seenEventIds",
+    "codex-workbench-notify"
+  ];
+  const files = ["main.js", "modules/codex-attention.js"];
+  const sources = files.map((file) => readFileSync(file, "utf8"));
+  const combined = sources.join("\n");
+  const missing = required.filter((part) => !combined.includes(part));
+  if (missing.length) {
+    throw new Error(`Codex alert bridge is incomplete; missing ${missing.join(", ")}`);
+  }
+  for (let index = 0; index < files.length; index += 1) {
+    const file = files[index];
+    const source = sources[index];
+    for (const forbidden of ["last-assistant-message", "input-messages"]) {
+      if (source.includes(forbidden)) {
+        throw new Error(`${file} forwards sensitive Codex payload field: ${forbidden}`);
       }
     }
   }
@@ -1388,10 +1435,13 @@ async function main() {
   check(process.execPath, ["--check", "vendor/gsd-control/main.js"]);
   check(process.execPath, ["--check", "vendor/internetvin-terminal/main.js"]);
   check(process.execPath, ["scripts/verify-secure-input.js"]);
+  check(process.execPath, ["scripts/verify-codex-attention.js"]);
+  check(pythonWithTomllib(), ["scripts/verify-codex-attention-helper.py"]);
   check("git", ["diff", "--check"]);
   assertOpenSessionMatchingSource();
   assertResponsivePickerSource();
   assertVmConnectUsesNestedSettingsHelpers();
+  assertCodexAttentionSource();
   assertDefaultWorkspaceScopeSource();
   assertSystemTmuxScopeSource();
   assertSystemTmuxHiddenFromNormalUiSource();

@@ -6181,116 +6181,7 @@ async function setMiddlePagesHidden(app, hidden, showNotice = true) {
 async function toggleMiddlePages(app, showNotice = true) {
   return setMiddlePagesHidden(app, !areMiddlePagesHidden(), showNotice);
 }
-var PTY_HELPER_PY = `"""PTY helper for vin-terminal. Wraps zsh in a real PTY with resize support."""
-import os, select, signal, struct, fcntl, termios, pty, time
-
-def main():
-    cols = int(os.environ.get("VIN_TERM_COLS", "80"))
-    rows = int(os.environ.get("VIN_TERM_ROWS", "24"))
-    master, slave = pty.openpty()
-    fcntl.ioctl(master, termios.TIOCSWINSZ,
-                struct.pack("HHHH", rows, cols, 0, 0))
-    pid = os.fork()
-    if pid == 0:
-        os.close(master)
-        os.setsid()
-        fcntl.ioctl(slave, termios.TIOCSCTTY, 0)
-        os.dup2(slave, 0)
-        os.dup2(slave, 1)
-        os.dup2(slave, 2)
-        if slave > 2:
-            os.close(slave)
-        os.execvp("/bin/zsh", ["/bin/zsh", "-i", "-l"])
-    os.close(slave)
-
-    def request_shutdown(_signum, _frame):
-        raise KeyboardInterrupt
-
-    signal.signal(signal.SIGTERM, request_shutdown)
-    signal.signal(signal.SIGHUP, request_shutdown)
-    signal.signal(signal.SIGINT, request_shutdown)
-
-    def resize(c, r):
-        fcntl.ioctl(master, termios.TIOCSWINSZ,
-                    struct.pack("HHHH", r, c, 0, 0))
-        os.kill(pid, signal.SIGWINCH)
-    buf = b""
-    SEQ_START = b"\\x1b]R;"
-    SEQ_END = b"\\x07"
-    try:
-        while True:
-            rlist, _, _ = select.select([0, master], [], [])
-            if 0 in rlist:
-                data = os.read(0, 4096)
-                if not data:
-                    break
-                buf += data
-                while SEQ_START in buf:
-                    idx = buf.index(SEQ_START)
-                    end = buf.find(SEQ_END, idx)
-                    if end < 0:
-                        if idx > 0:
-                            os.write(master, buf[:idx])
-                        buf = buf[idx:]
-                        break
-                    if idx > 0:
-                        os.write(master, buf[:idx])
-                    seq = buf[idx + len(SEQ_START):end]
-                    buf = buf[end + 1:]
-                    try:
-                        parts = seq.split(b";")
-                        if len(parts) == 2:
-                            resize(int(parts[0]), int(parts[1]))
-                    except (ValueError, IndexError):
-                        pass
-                else:
-                    if buf:
-                        os.write(master, buf)
-                        buf = b""
-            if master in rlist:
-                try:
-                    data = os.read(master, 4096)
-                    if not data:
-                        break
-                    os.write(1, data)
-                except OSError:
-                    break
-    except BaseException:
-        pass
-    try:
-        os.killpg(pid, signal.SIGTERM)
-    except ProcessLookupError:
-        pass
-    except OSError:
-        try:
-            os.kill(pid, signal.SIGTERM)
-        except ProcessLookupError:
-            pass
-    try:
-        os.close(master)
-    except OSError:
-        pass
-    deadline = time.time() + 1.0
-    while time.time() < deadline:
-        try:
-            done, _ = os.waitpid(pid, os.WNOHANG)
-            if done:
-                return
-        except ChildProcessError:
-            return
-        time.sleep(0.05)
-    try:
-        os.killpg(pid, signal.SIGKILL)
-    except ProcessLookupError:
-        pass
-    try:
-        os.waitpid(pid, 0)
-    except ChildProcessError:
-        pass
-
-if __name__ == "__main__":
-    main()
-`;
+var PTY_HELPER_PY = __WORKBENCH_PTY_SOURCE__;
 async function openTerminalLink(app, rawUrl) {
   const url = String(rawUrl || "").trim();
   if (!url) return;
@@ -6845,7 +6736,7 @@ var BookmarkManager = class {
   }
 };
 var TerminalSession = class {
-  constructor(parent, id, cwd, app) {
+  constructor(parent, id, cwd, app, options = {}) {
     this.textareaEl = null;
     this.autocomplete = null;
     this.bookmarkManager = null;
@@ -6855,7 +6746,8 @@ var TerminalSession = class {
     this.dropZoneEl = null;
     this.dropBadgeTimer = null;
     this.id = id;
-    this.name = `zsh ${id}`;
+    this.name = `Terminal ${id}`;
+    this.shell = options.shell || "";
     this.category = "";
     this.app = app;
     this.containerEl = parent.createDiv({ cls: "vin-terminal-session" });
@@ -6889,7 +6781,8 @@ var TerminalSession = class {
       env: {
         ...cleanEnv,
         TERM: "xterm-256color",
-        LANG: "en_US.UTF-8",
+        LANG: cleanEnv.LANG || "C.UTF-8",
+        VIN_TERM_SHELL: options.shell || "",
         VIN_TERM_COLS: "80",
         VIN_TERM_ROWS: "24"
       }
@@ -7652,6 +7545,7 @@ var TerminalView = class extends import_obsidian.ItemView {
         id: s.id,
         name: s.name,
         category: s.category || "",
+        shell: s.shell || "",
         cwWorkspace: s.__cwWorkspace || "",
         cwProject: s.__cwProject || "",
         cwTmuxName: s.__cwTmuxName || ""
@@ -7676,8 +7570,8 @@ var TerminalView = class extends import_obsidian.ItemView {
         const id = saved.id ?? this.nextId++;
         if (id >= this.nextId) this.nextId = id + 1;
         const vaultPath = this.app.vault.adapter.basePath;
-        const session = new TerminalSession(this.sessionsEl, id, vaultPath, this.app);
-        session.name = saved.name ?? `zsh ${id}`;
+        const session = new TerminalSession(this.sessionsEl, id, vaultPath, this.app, { shell: saved.shell || "" });
+        session.name = saved.name ?? `Terminal ${id}`;
         session.category = this.resolveAssignableCategory(saved.category);
         session.__cwWorkspace = saved.cwWorkspace || "";
         session.__cwProject = saved.cwProject || "";
@@ -7725,11 +7619,11 @@ var TerminalView = class extends import_obsidian.ItemView {
     );
     this.createSession();
   }
-  createSession(name, category = this.defaultCategoryForNewSession()) {
+  createSession(name, category = this.defaultCategoryForNewSession(), options = {}) {
     this.syncCategoriesFromShared([category]);
     const id = this.nextId++;
     const vaultPath = this.app.vault.adapter.basePath;
-    const session = new TerminalSession(this.sessionsEl, id, vaultPath, this.app);
+    const session = new TerminalSession(this.sessionsEl, id, vaultPath, this.app, options);
     if (name) session.name = name;
     session.category = this.resolveAssignableCategory(category);
     this.sessions.push(session);
@@ -8331,6 +8225,12 @@ var TerminalView = class extends import_obsidian.ItemView {
     const helpBtn = controls.createDiv({ cls: "vin-terminal-tab-help", text: "?" });
     helpBtn.title = "Shortcuts";
     helpBtn.addEventListener("click", () => new ShortcutsModal(this.app).open());
+    requestAnimationFrame(() => {
+      const activeTab = tabsArea.querySelector('.vin-terminal-tab.is-active');
+      if (activeTab && tabsArea.isConnected) {
+        tabsArea.scrollLeft += activeTab.getBoundingClientRect().left - tabsArea.getBoundingClientRect().left;
+      }
+    });
   }
   startRename(tab, label, session) {
     this.isRenaming = true;

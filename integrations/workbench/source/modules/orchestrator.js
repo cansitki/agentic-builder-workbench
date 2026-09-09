@@ -1,9 +1,10 @@
-// All 6 modules load together; the secure listener is separately enabled. Settings live
+// All 7 modules load together; the secure listener is separately enabled. Settings live
 // under named keys and are initialized lazily by each module.
 const DEFAULT_SETTINGS = {
   vmConnect: {},
   countdown: {},
-  secureInput: {}
+  secureInput: {},
+  codexAttention: {}
 };
 
 // __TerminalPluginClass and __GSDPluginClass are declared in the HEADER,
@@ -37,6 +38,7 @@ class Workbench extends Plugin {
     // Load after Workspace so the secure broker can reuse the normalized
     // Coder/SSH connection settings and open one listener for the selected workspace.
     await this._loadModule('secureInput', new SecureInputModule(this));
+    await this._loadModule('codexAttention', new CodexAttentionModule(this));
 
     this.addSettingTab(new WorkbenchSettingTab(this.app, this));
 
@@ -477,7 +479,7 @@ class Workbench extends Plugin {
 
     const tabName = tmuxSession;
     const targetSession = typeof view.createSession === 'function'
-      ? (view.createSession(tabName, targetCategory) || view.activeSession || null)
+      ? (view.createSession(tabName, targetCategory, { shell: ws.shell || '' }) || view.activeSession || null)
       : (view.activeSession || null);
 
     const markSession = (sess = targetSession || view.activeSession) => {
@@ -539,6 +541,7 @@ class Workbench extends Plugin {
     const VIEW_TYPE = 'vin-terminal-view';
 
     let leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE);
+    const createdTerminalView = leaves.length === 0;
     if (leaves.length === 0) {
       const leaf = this.app.workspace.getLeaf('tab');
       await leaf.setViewState({ type: VIEW_TYPE, active: true });
@@ -577,9 +580,14 @@ class Workbench extends Plugin {
       if (gsdInstance && typeof gsdInstance.saveData === 'function') return gsdInstance.saveData(gsdSettings);
       return this.saveData(this.settings);
     });
+    const initialSessions = createdTerminalView ? [...view.sessions] : [];
     const targetSession = typeof view.createSession === 'function'
-      ? (view.createSession(tabName, targetCategory) || view.activeSession || null)
+      ? (view.createSession(tabName, targetCategory, { shell: ws.shell || '' }) || view.activeSession || null)
       : (view.activeSession || null);
+
+    if (targetSession && typeof view.closeSession === 'function') {
+      for (const initial of initialSessions) if (initial !== targetSession) view.closeSession(initial);
+    }
 
     // Mark this session so the rename watcher can persist user renames
     // back to project.displayName.
@@ -1638,6 +1646,17 @@ class Workbench extends Plugin {
   }
 
   async saveSettings() {
+    // Keep the UI's canonical object identity. Vendor modules otherwise retain
+    // a stale shallow copy (notably the Coder username after typing).
+    for (const key of ['gsd', 'terminal']) {
+      const vendor = this.modules && this.modules[key];
+      if (!vendor || !vendor.settings) continue;
+      const canonical = this.settings[key] = this.settings[key] || {};
+      for (const [name, value] of Object.entries(vendor.settings)) {
+        if (!(name in canonical)) canonical[name] = value;
+      }
+      vendor.settings = canonical;
+    }
     await this.saveData(this.settings);
   }
 }
@@ -1653,7 +1672,9 @@ class WorkbenchSettingTab extends PluginSettingTab {
 
   display() {
     const { containerEl } = this;
+    if (this._layoutObserver) { try { this._layoutObserver.disconnect(); } catch {} }
     containerEl.empty();
+    containerEl.addClass('workbench-settings-root');
 
     // Reset the flex we set last time (PluginSettingTab reuses containerEl).
     containerEl.style.display = 'flex';
@@ -1667,6 +1688,7 @@ class WorkbenchSettingTab extends PluginSettingTab {
       { key: 'connections', title: 'Remote Connections',  render: (el) => this._renderConnectionsPage(el) },
       { key: 'secure-input', title: 'Secure Input', render: (el) => this._renderSecureInputPage(el) },
       { key: 'gsd',         title: 'Workspace',           render: (el) => this._renderGsdPage(el) },
+      { key: 'codex',       title: 'Codex Alerts',        render: (el) => this._renderCodexAttentionPage(el) },
       { key: 'countdown',   title: 'Countdown Bar',       render: (el) => this._renderCountdownPage(el) },
       { key: 'excalidraw',  title: 'Excalidraw Live Text',render: (el) => this._renderExcalidrawPage(el) },
       { key: 'terminal',    title: 'Terminal',            render: (el) => this._renderTerminalPage(el) },
@@ -1724,6 +1746,27 @@ class WorkbenchSettingTab extends PluginSettingTab {
     content.style.padding = '24px 32px';
     content.style.overflowY = 'auto';
     this._activeContentEl = content;
+    content.style.minWidth = '0';
+    content.style.minHeight = '0';
+    const applyLayout = () => {
+      if (!containerEl.clientWidth) return;
+      const compact = containerEl.clientWidth < 620;
+      containerEl.toggleClass('is-compact', compact);
+      containerEl.style.flexDirection = compact ? 'column' : 'row';
+      containerEl.style.minHeight = compact ? '0' : '500px';
+      sidebar.style.width = compact ? '100%' : '200px';
+      sidebar.style.display = compact ? 'flex' : 'block';
+      sidebar.style.flexWrap = 'wrap';
+      sidebar.style.padding = compact ? '8px' : '16px 0';
+      sidebar.style.borderRight = compact ? 'none' : '1px solid var(--background-modifier-border)';
+      sidebar.style.borderBottom = compact ? '1px solid var(--background-modifier-border)' : 'none';
+      titleEl.style.width = compact ? '100%' : '';
+      content.style.padding = compact ? '16px' : '24px 32px';
+    };
+    const Observer = containerEl.ownerDocument.defaultView.ResizeObserver;
+    this._layoutObserver = new Observer(applyLayout);
+    this._layoutObserver.observe(containerEl);
+    applyLayout();
 
     const selected = pages.find(p => p.key === this._currentPage) || pages[0];
     selected.render(content);
@@ -1736,6 +1779,11 @@ class WorkbenchSettingTab extends PluginSettingTab {
     }
   }
 
+  hide() {
+    if (this._layoutObserver) { try { this._layoutObserver.disconnect(); } catch {} }
+    this._layoutObserver = null;
+  }
+
   // =========================================================================
   // Sidebar pages
   // =========================================================================
@@ -1743,9 +1791,9 @@ class WorkbenchSettingTab extends PluginSettingTab {
   _renderAbout(el) {
     el.createEl('h2', { text: 'Workbench' });
     el.createEl('p', {
-      text: 'A unified Obsidian plugin that bundles six components: remote connections ' +
+      text: 'A unified Obsidian plugin that bundles seven components: remote connections ' +
             '(Coder / SSH / local), an embedded terminal, a floating countdown widget, ' +
-            'Excalidraw live text sync, workspace management, and encrypted credential input.'
+            'Excalidraw live text sync, workspace management, encrypted credential input, and Codex completion alerts.'
     });
 
     const hr = el.createEl('hr');
@@ -1764,6 +1812,7 @@ class WorkbenchSettingTab extends PluginSettingTab {
       ['Excalidraw Live Text', 'Sync note content into Excalidraw text elements via @from() tags.'],
       ['Workspace Views', 'Project dashboard, status view, and folder scanning for workspace projects.'],
       ['Secure Input', 'A native encrypted credential modal for one explicitly selected workspace.'],
+      ['Codex Alerts', 'Native desktop notifications when a remote Codex turn finishes.'],
     ];
     for (const [name, desc] of items) {
       const li = list.createEl('li');
@@ -1886,6 +1935,81 @@ class WorkbenchSettingTab extends PluginSettingTab {
         .setPlaceholder('your-coder-username')
         .setValue(gsd.coderUser || '')
         .onChange(async v => { gsd.coderUser = v.trim(); await this.plugin.saveSettings(); }));
+  }
+
+  _renderCodexAttentionPage(el) {
+    el.createEl('h2', { text: 'Codex Alerts' });
+    el.createEl('p', {
+      text: 'The selected workspace detects completed Codex turns and streams sanitized events ' +
+            'to Workbench. This Mac only receives the event and displays a native notification.'
+    });
+
+    const settings = this.plugin.settings.codexAttention = this.plugin.settings.codexAttention || {};
+    const module = this.plugin.modules && this.plugin.modules.codexAttention;
+
+    new Setting(el)
+      .setName('Native completion alerts')
+      .setDesc('Notify when a remote Codex session finishes a turn and is waiting for review.')
+      .addToggle(toggle => toggle
+        .setValue(settings.enabled !== false)
+        .onChange(async value => {
+          settings.enabled = value;
+          await this.plugin.saveSettings();
+          if (module && typeof module.setEnabled === 'function') module.setEnabled(value);
+        }));
+
+    const workspaces = this.plugin._getGsdWorkspaces(this.plugin.settings.gsd || {});
+    new Setting(el)
+      .setName('Event workspace')
+      .setDesc('Auto prefers ops-main, then main, then the first configured remote connection.')
+      .addDropdown(dropdown => {
+        dropdown.addOption('', 'Auto (ops-main preferred)');
+        const seen = new Set();
+        for (const workspace of workspaces) {
+          if (!workspace) continue;
+          const value = String(workspace.coderName || workspace.displayName || '').trim();
+          if (!value || seen.has(value)) continue;
+          seen.add(value);
+          dropdown.addOption(value, workspace.displayName || value);
+        }
+        dropdown.setValue(settings.workspace || '');
+        dropdown.onChange(async value => {
+          settings.workspace = value;
+          await this.plugin.saveSettings();
+          if (module && typeof module.restart === 'function') module.restart();
+        });
+      });
+
+    new Setting(el)
+      .setName('Listener status')
+      .setDesc(module && typeof module.getStatusSummary === 'function'
+        ? module.getStatusSummary()
+        : 'Codex alert module is unavailable.')
+      .addButton(button => button
+        .setButtonText('Restart listener')
+        .onClick(() => {
+          if (module && typeof module.restart === 'function') module.restart();
+        }));
+
+    new Setting(el)
+      .setName('Test this Mac')
+      .setDesc('Send a local test through macOS Notification Center without creating a VM event.')
+      .addButton(button => button
+        .setButtonText('Send test notification')
+        .setCta()
+        .onClick(async () => {
+          if (!module || typeof module.testNotification !== 'function') {
+            new Notice('Codex alert module is unavailable.');
+            return;
+          }
+          await module.testNotification();
+        }));
+
+    el.createEl('p', {
+      cls: 'setting-item-description',
+      text: 'The VM queue contains only event IDs, workspace/session names, and project paths. ' +
+            'Prompts and assistant replies are never forwarded to Notification Center.'
+    });
   }
 
   _renderCountdownPage(el) {

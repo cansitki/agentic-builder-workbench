@@ -1,6 +1,6 @@
 # Workbench source and provenance
 
-This repository ships **Workbench 3.0.1**, plugin ID `workbench`, a portable derivative
+This repository ships **Workbench 3.1.0**, plugin ID `workbench`, a portable derivative
 of [Can Workbench 2.2.0](https://github.com/cansitki/can-workbench/tree/e09d8a0b8e2af60405aa05b4477850f88f8dd995).
 The upstream author is Can Sitki. Existing third-party credits, including Vin Verma
 and the terminal bundle's MIT attribution, are retained. See the repository license
@@ -47,3 +47,14 @@ source-lock and installer hashes, and run release checks.
 
 Source checks and simulated tests do not certify a recipient's desktop or remote
 accounts. Use [MIGRATION.md](MIGRATION.md) and the root parity checklist.
+
+## Canonical plugin repository
+
+The original plugin repository now maintains the generic version directly. This
+kit includes its pinned source snapshot for offline installation. Runtime source
+must be developed upstream and synchronized here, not maintained as a divergent fork.
+
+[Feature guide](https://github.com/cansitki/can-workbench/blob/6a45c1c91ec3a04fc11dbf6fa19dc8a22976e849/GUIDE.ro.md) ·
+[Desktop audit and screenshots](https://github.com/cansitki/can-workbench/blob/6a45c1c91ec3a04fc11dbf6fa19dc8a22976e849/AUDIT.md).
+
+The snapshot also includes Codex completion alerts and their optional remote helper.

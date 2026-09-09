@@ -27,7 +27,7 @@ The [3.0.1 audit](AUDIT.ro.md) lists fixes, executed checks, and target-environm
 
 For the full operator inventory and transfer receipt, read
 [START-HERE.ro.md](START-HERE.ro.md), [SKILLS.ro.md](SKILLS.ro.md), and
-[PARITY.ro.md](PARITY.ro.md). The reviewed Workbench 3.0.1 plugin source and release assets
+[PARITY.ro.md](PARITY.ro.md). The reviewed Workbench 3.1.0 plugin source and release assets
 are included under `integrations/workbench/source/`.
 
 1. Read the [ten-minute system tour](TOUR.md), [Romanian quickstart](QUICKSTART.ro.md), [capability catalog](CAPABILITIES.md), [FAQ](FAQ.md), or [guided onboarding](ONBOARDING.md).

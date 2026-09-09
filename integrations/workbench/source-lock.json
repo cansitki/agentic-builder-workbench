@@ -1,29 +1,35 @@
 {
   "name": "Workbench",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "upstream": {
     "repository": "https://github.com/cansitki/can-workbench",
-    "commit": "e09d8a0b8e2af60405aa05b4477850f88f8dd995",
-    "version": "2.2.0"
+    "commit": "6a45c1c91ec3a04fc11dbf6fa19dc8a22976e849",
+    "version": "3.1.0"
   },
   "files": {
-    "build.py": "1e156692feea70761af05914df44918645baed16a42add3d72a320b6a458a8cb",
-    "main.js": "2de5220b6ee92f7d002424b96931b6caeacf4f441475bca9340132857787f819",
-    "manifest.json": "dc8843a857c0bcbc560993bb63262b8a6a07dafd2a72852d5f5734b0aa279590",
+    "build.py": "835eac175c6aebb45f50c149db780faa159ccb89b69d18235a9e155b379dd5f8",
+    "main.js": "f217614289598689b273111c6b54bca9daf96284dfbd5b601d0d0c57f3ec33f7",
+    "manifest.json": "0c2269a57abc9287cf3a24f7a0452682e963cb0bd44a9f91292244decae95ab7",
+    "modules/codex-attention.js": "4b1093a45c9c3f82dafbda4bd42114f7717767930bfda795887f976f27e32de2",
     "modules/countdown.js": "a91f08ac1fcda9f7db106510d6639bf6caccf8a138bdfd629e29678d5a20c165",
     "modules/excalidraw-live-text.js": "4203edc17fe31b39fa18246fb5923ddffb8be29a9e85d6f5d2cfce024932a570",
-    "modules/orchestrator.js": "4bde00f674f3dd0d77bfdbadab46e4982e03d6a737cea96b3b0efff58c9f93ac",
+    "modules/orchestrator.js": "4755e0bcc394ff025e43579f906269c7314af97b7aaec2f1d55d78b5ab4b4792",
     "modules/secure-input.js": "955ef9d247cdcd455227fd5adc3a998a9b4f25572bd968f70eb4c743e12011f7",
     "modules/vm-connect.js": "b846009097f327abbb2f1d9ac3729944a043ae2ff4c353f0335b566b5765bbaa",
-    "pty-helper.py": "c6f5d74962b4fc0ce934498aaf65016a434ee9a8c67f5f975c1253443fcf63f2",
-    "scripts/verify-portable-defaults.js": "81e92634b2167a648f7f361c73694d2bb7af6a83a859c9d3c356d1652fbc566c",
+    "pty-helper.py": "0b3a3c8e26c59aa233e44bcaca7fa910e50b846f9dc6c8e2c73b1a0d535626f3",
+    "scripts/codex-workbench-notify.py": "34d30cfe045d819f756a33243f4334a2013c63dedc3a9795f38e143bd5c698f5",
+    "scripts/install-codex-attention.py": "f5fb2bf3450a5b3d6bf0f9c02533d25eff1a6c11fef5775e9ebbe0a2566124f6",
+    "scripts/test-pty.py": "37ed9becea1a1d4cc8c1c0ab45bbf10f86f99d5d22517c92eb0b981b768720d8",
+    "scripts/verify-codex-attention-helper.py": "164b9faff045f9dc77bcfbda94ccd14aa68a60ca5f45e6e391e7248a6fab4671",
+    "scripts/verify-codex-attention.js": "840410fdcc5eaf675ca28745516c93087dcaa4dcf7dd7452fcd1a48c701c3b29",
+    "scripts/verify-portable-defaults.js": "b795e53ffe5e6b25b985876eb9d025dd61a830dfd49854f86bc3ff2c3e5155cf",
     "scripts/verify-secure-input.js": "2b6bd60e76ede94de98771ddcfec887ba8dc66ea60ab329021258f13ebc82359",
-    "scripts/verify-workbench.js": "ef37dc8807b589f8a3f1cc2215caaa2c4895e3b7b2b56c13bfa2b4d06b545823",
-    "styles.css": "0a4d60b8835a52099814e1de863815147fe6cb8ed89bc1c96f978d8889c4b6db",
-    "vendor/gsd-control/main.js": "80e94be16dace3958037ee1a4906c6f13cdb6b20f1465550e63baadf0ee36491",
+    "scripts/verify-workbench.js": "52f6735e529f6c1cbc16861d8f719844b5730253c49e6c60c82527fcf6789602",
+    "styles.css": "67508fb37222da661b577e525398eea67cc3b70902b28fd81b2a14ab8407e71b",
+    "vendor/gsd-control/main.js": "48bfcd3cb56aa7a98db7b8edd63bc28cb2e55e618578834c8f2b51aeeb786022",
     "vendor/gsd-control/styles.css": "d8a8d022f8a17e4aee961fb88a7a0b4680a9b77e1cd475ecb2076fbced9be5ed",
-    "vendor/internetvin-terminal/main.js": "f9a9a539e379ca657b0454d953360503ce539787ae80c90e3ca896acefb0e50f",
+    "vendor/internetvin-terminal/main.js": "c69c27d17342a5492c7ac2c035a66568fac6b554fe346cbef6842c616752e48c",
     "vendor/internetvin-terminal/styles.css": "78c673131cf4bb3a085c2f8aacda22ce78b3fc87d09a1dfcb5080a06db4b6e4d"
   },
-  "note": "Reviewed portable derivative; upstream personal settings and instructions excluded. See SOURCE.md."
+  "note": "Exact runtime/source snapshot of the original Workbench repository; see its GUIDE.ro.md and AUDIT.md."
 }
