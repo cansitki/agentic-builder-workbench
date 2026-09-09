@@ -113,6 +113,10 @@ async function main() {
   await assert.rejects(secureInput.configure({ workspace: "main" }), /pending credential requests/);
   secureInput.activeModal = null;
   assert.equal(secureInput.settings.workspace, "ops-main");
+  plugin.modules.gsd.settings.workspaces.push({coderName:"system",type:"coder",hidden:true});
+  secureInput.settings.workspace="system";
+  assert.equal(secureInput._selectWorkspace().coderName,"system","explicit background credential selection must work");
+  secureInput.settings.workspace="ops-main";
   assert.equal(secureInput._selectWorkspace().coderName, "ops-main");
   assert.equal(
     secureInput._target(secureInput._selectWorkspace()).coderTransport,

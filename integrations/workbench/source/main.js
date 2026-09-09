@@ -1815,8 +1815,17 @@ class SecureInputModule {
     return String((workspace && (workspace.displayName || workspace.coderName || workspace.sshHost)) || 'workspace');
   }
 
+  _credentialWorkspaces() {
+    // Credential routing is an explicit administrative selection. Background
+    // workspaces stay hidden from normal terminals, but can receive setup input.
+    const settings = this._gsdSettings();
+    const top = settings.workspaces;
+    const nested = settings.gsd && settings.gsd.workspaces;
+    return Array.isArray(top) && top.length ? top : (Array.isArray(nested) ? nested : []);
+  }
+
   _selectWorkspace() {
-    const workspaces = this.plugin._getGsdWorkspaces(this._gsdSettings());
+    const workspaces = this._credentialWorkspaces();
     if (!workspaces.length) return null;
     const configured = this.settings.workspace.trim();
     if (!configured) return null;
@@ -2140,7 +2149,7 @@ class SecureInputModule {
     const workspace = change.workspace === undefined ? this.settings.workspace : String(change.workspace).trim();
     const enabled = change.enabled === undefined ? this.settings.enabled : Boolean(change.enabled);
     if (enabled) {
-      const matches = this.plugin._getGsdWorkspaces(this._gsdSettings()).filter(w => w.coderName === workspace);
+      const matches = this._credentialWorkspaces().filter(w => w.coderName === workspace);
       if (!workspace || matches.length !== 1) throw new Error('Select one available workspace before enabling Secure Input.');
       this._target(matches[0]);
     }
@@ -25099,9 +25108,9 @@ class WorkbenchSettingTab extends PluginSettingTab {
       .setDesc('Uses the connection identifier. Finish or cancel pending requests before switching.')
       .addDropdown(dropdown => {
         dropdown.addOption('', 'Select a workspace');
-        const workspaces = this.plugin._getGsdWorkspaces(module._gsdSettings());
+        const workspaces = module._credentialWorkspaces();
         for (const workspace of workspaces) {
-          if (workspace.coderName) dropdown.addOption(workspace.coderName, workspace.displayName || workspace.coderName);
+          if (workspace.coderName) dropdown.addOption(workspace.coderName, (workspace.displayName || workspace.coderName) + (workspace.hidden || workspace.coderName === 'system' ? ' (background)' : ''));
         }
         if (module.settings.workspace && !workspaces.some(w => w.coderName === module.settings.workspace)) {
           dropdown.addOption(module.settings.workspace, 'Unavailable: ' + module.settings.workspace);

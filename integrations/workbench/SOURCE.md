@@ -1,6 +1,6 @@
 # Workbench source and provenance
 
-This repository ships **Workbench 3.0.0**, plugin ID `workbench`, a portable derivative
+This repository ships **Workbench 3.0.1**, plugin ID `workbench`, a portable derivative
 of [Can Workbench 2.2.0](https://github.com/cansitki/can-workbench/tree/e09d8a0b8e2af60405aa05b4477850f88f8dd995).
 The upstream author is Can Sitki. Existing third-party credits, including Vin Verma
 and the terminal bundle's MIT attribution, are retained. See the repository license
@@ -22,6 +22,7 @@ history are not included.
   listeners are ignored.
 - The legacy SSH private-key paste form is removed. Use existing OS-managed SSH
   configuration or key-file paths. Agent intake remains exclusively secenv ask.
+- Background workspaces can be explicitly selected for credential setup while remaining hidden from ordinary terminal views.
 - System tmux scope is `@workbench_scope=system`; `sys-*` sessions are also hidden.
 - Manual screen capture explains its macOS dependency on other platforms.
 

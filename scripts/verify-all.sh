@@ -5,6 +5,9 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 bash scripts/audit-publication.sh
+python3 -m unittest discover -s infra/tests -v
+bash -n infra/host/bootstrap.sh
+node --check scripts/obsidian-ui-smoke.js
 python3 scripts/verify-workbench-source.py
 python3 integrations/workbench/source/build.py --check
 node --check integrations/workbench/source/main.js

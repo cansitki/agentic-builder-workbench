@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build my Workbench"
+  short_description: "Set up a complete personal workbench from a PC"
+  default_prompt: "Use $workbench-bootstrap to build my complete Workbench environment and guide me through the required logins."

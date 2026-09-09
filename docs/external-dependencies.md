@@ -11,7 +11,7 @@ The repository carries the operating rules, templates, skills, validation script
 | Python 3.11+ | `secenv` runtime and tests | `python3 --version` |
 | Node.js | Template/link helpers and WebCrypto compatibility test | `node --version` |
 | Obsidian Desktop | Vault/operator UI | Open intended vault |
-| Workbench v3.0.0 | Terminals/workspaces and native secure-input modal | Listener status + pinned asset hashes |
+| Workbench v3.0.1 | Terminals/workspaces and native secure-input modal | Listener status + pinned asset hashes |
 | `secenv` | Ciphertext-only credential request/install | `secenv doctor` |
 
 ## Optional

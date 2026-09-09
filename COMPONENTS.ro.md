@@ -61,10 +61,18 @@ preferințele. TODO ține angajamentele, PROJECT.md descrie rezultatul, PLANS.md
 ține pașii, iar HANDOFF.md permite reluarea. Daily notes țin cronologia; Vault Index
 și legăturile fac contextul ușor de găsit.
 
-Cele opt skill-uri și utilizarea lor sunt în [SKILLS.ro.md](SKILLS.ro.md): onboarding,
-project kickoff, secure intake, secure release, vault reconcile, copywriting,
+Cele nouă skill-uri și utilizarea lor sunt în [SKILLS.ro.md](SKILLS.ro.md): onboarding,
+bootstrap complet, project kickoff, secure intake, secure release, vault reconcile, copywriting,
 frontend design și articole. Sunt instrucțiuni pentru agent, nu pluginuri Obsidian.
 
 Urmează [INSTALL.md](INSTALL.md), [migrarea](integrations/workbench/MIGRATION.md)
 și [PARITY.ro.md](PARITY.ro.md). Testele repo-ului verifică artefactele și comportamente
 simulate; nu certifică un calculator sau cont remote neaccesat.
+
+## Instalare ghidată completă
+
+[GET-STARTED.ro.md](GET-STARTED.ro.md) conține mesajul pe care începătorul îl dă
+lui Codex. [AGENT-SETUP.md](AGENT-SETUP.md) este runbookul agentului, iar `infra/`
+conține instalarea și configurația Coder/Tunnel/workspaces. Adaptorul Sync citește
+secrete numai din fișierele create de modal; serviciul durabil sincronizează
+volumul `/vault`. `workbench-vault` oferă operațiile de note în workspace-ul fără GUI.

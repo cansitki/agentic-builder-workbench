@@ -29,3 +29,14 @@ jobs:
 
       - name: Test fail-closed installers
         run: bash scripts/test-installers.sh
+
+  isolated-stack:
+    runs-on: ubuntu-latest
+    needs: validate
+    timeout-minutes: 30
+    env:
+      WORKBENCH_ISOLATED_DOCKER: "yes"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Exercise Coder, workspace image, SSH and persistent volumes
+        run: python3 infra/tests/smoke_stack.py

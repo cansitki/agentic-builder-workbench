@@ -12,7 +12,7 @@ Workbench turns Obsidian Desktop into the operator surface for this system. It i
 - Excalidraw live-text support.
 - Native encrypted secure-input modal.
 
-The private repository ships Workbench 3.0.0 as a reviewed derivative with included source and pinned hashes. It starts with no configured Coder user or workspace. See `integrations/workbench/SOURCE.md` for provenance and `integrations/workbench/MIGRATION.md` for installation.
+The private repository ships Workbench 3.0.1 as a reviewed derivative with included source and pinned hashes. It starts with no configured Coder user or workspace. See `integrations/workbench/SOURCE.md` for provenance and `integrations/workbench/MIGRATION.md` for installation.
 
 ## Source/build rule
 

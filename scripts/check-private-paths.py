@@ -9,7 +9,7 @@ spec = spec_from_file_location('source_check', ROOT / 'scripts/verify-workbench-
 module = module_from_spec(spec)
 spec.loader.exec_module(module)
 module.verify()
-ignored = {'.git', '.venv', 'venv', 'node_modules', 'build', 'dist', '__pycache__'}
+ignored = {'.git', '.terraform', '.venv', 'venv', 'node_modules', 'build', 'dist', '__pycache__'}
 pattern = re.compile(r'/(home|Users)/[A-Za-z0-9._-]+/')
 failed = []
 key_pattern = re.compile(r'-----BEGIN ([A-Z ]+ )?PRIVATE KEY-----')

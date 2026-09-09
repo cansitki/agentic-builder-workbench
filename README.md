@@ -1,6 +1,8 @@
 # Agentic Builder Workbench
 
-A private, reusable operating system for building software with coding agents.
+A private starter repository that Codex can use to build your personal work environment.
+
+**New user: start with [GET-STARTED.ro.md](GET-STARTED.ro.md).** Give its prompt to Codex. The agent follows [AGENT-SETUP.md](AGENT-SETUP.md) to configure local Obsidian/Workbench, secure input, a dedicated Coder server, two workspaces, Cloudflare Tunnel, logins and vault sync.
 
 This repository transfers the **method**, not somebody else's history. It contains a clean agent-guidance system, an Obsidian-friendly knowledge structure, project templates, security references, and lightweight workflows for web apps, Telegram bots, and crypto projects.
 
@@ -12,7 +14,7 @@ It intentionally contains no production credentials, personal notes, customer da
 - One canonical task list instead of scattered TODO files.
 - A vault structure for daily logs, durable notes, project hubs, decisions, and research.
 - A repeatable loop from idea → spec → implementation → verification → durable memory.
-- Safe Codex defaults and eight reusable skills.
+- Safe Codex defaults and nine reusable skills.
 - A functional `secenv ask` runtime plus verified Workbench installation for native encrypted credential intake.
 - General architecture blueprints for web apps, Telegram bots, and crypto projects.
 - A substantial vibe-coding security library with private-use terms.
@@ -21,11 +23,11 @@ It intentionally contains no production credentials, personal notes, customer da
 ## Start here
 
 See [what every component does](COMPONENTS.ro.md) and [migration to Workbench](integrations/workbench/MIGRATION.md).
-The [3.0.0 audit](AUDIT.ro.md) lists fixes, executed checks, and target-environment limits.
+The [3.0.1 audit](AUDIT.ro.md) lists fixes, executed checks, and target-environment limits.
 
 For the full operator inventory and transfer receipt, read
 [START-HERE.ro.md](START-HERE.ro.md), [SKILLS.ro.md](SKILLS.ro.md), and
-[PARITY.ro.md](PARITY.ro.md). The reviewed Workbench 3.0.0 plugin source and release assets
+[PARITY.ro.md](PARITY.ro.md). The reviewed Workbench 3.0.1 plugin source and release assets
 are included under `integrations/workbench/source/`.
 
 1. Read the [ten-minute system tour](TOUR.md), [Romanian quickstart](QUICKSTART.ro.md), [capability catalog](CAPABILITIES.md), [FAQ](FAQ.md), or [guided onboarding](ONBOARDING.md).

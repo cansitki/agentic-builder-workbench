@@ -1,5 +1,7 @@
 # Guided Onboarding
 
+For “build/install the entire system”, use [AGENT-SETUP.md](AGENT-SETUP.md) and `$workbench-bootstrap`. The tour below is for explanation/personalization, not a stopping point for an installation request.
+
 The fastest way to understand this repository is to let the workbench interview you and build a non-secret configuration plan.
 
 ## Start the conversation

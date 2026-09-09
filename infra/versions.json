@@ -1,0 +1,11 @@
+{
+  "verified": "2026-09-09",
+  "coder": "2.36.4",
+  "cloudflared": "2026.8.3",
+  "postgres": "17",
+  "node_image": "24.19.0-bookworm",
+  "codex": "0.153.4",
+  "terraform": "1.16.1",
+  "coder_provider": "2.18.0",
+  "docker_provider": "4.6.0"
+}

@@ -1,7 +1,7 @@
 {
   "id": "workbench",
   "name": "Workbench",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "minAppVersion": "1.0.0",
   "description": "Unified workbench: remote connections (Coder / SSH / local), embedded terminal, workspace views, countdown bar, and Excalidraw live text.",
   "author": "Workbench contributors",

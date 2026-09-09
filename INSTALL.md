@@ -1,5 +1,7 @@
 # Full Installation Sequence
 
+For a novice handing this repository to Codex, start at [GET-STARTED.ro.md](GET-STARTED.ro.md). The executable VPS/Coder/Cloudflare workflow is [AGENT-SETUP.md](AGENT-SETUP.md); this page remains the local component reference.
+
 Use this order. It keeps the system useful before granting it credentials or external authority.
 
 ## 1. Clone and inspect
@@ -74,7 +76,7 @@ For an existing vault, do not copy blindly. Search/merge canonical TODO, daily-f
 bash scripts/install-workbench.sh /absolute/path/to/ObsidianVault
 ```
 
-The installer uses the included Workbench v3.0.0 snapshot offline. It requires the complete source inventory and pinned release hashes to match and refuses an existing plugin directory. Read `integrations/workbench/SOURCE.md` for defaults requiring explicit configuration.
+The installer uses the included Workbench v3.0.1 snapshot offline. It requires the complete source inventory and pinned release hashes to match and refuses an existing plugin directory. Read `integrations/workbench/SOURCE.md` for defaults requiring explicit configuration.
 
 Enable Workbench in Obsidian and add your own connection. Coder username and workspaces start empty. For remote uploads set Upload directory. In Settings → Workbench → Secure Input, select a workspace before enabling the listener. For an existing old plugin, follow [the migration guide](integrations/workbench/MIGRATION.md); never enable both versions.
 

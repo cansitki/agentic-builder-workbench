@@ -7,6 +7,7 @@ const root = resolve(new URL("..", import.meta.url).pathname);
 const markdownFiles = [];
 const ignoredDirectories = new Set([
   ".git",
+  ".terraform",
   ".mypy_cache",
   ".pytest_cache",
   ".ruff_cache",

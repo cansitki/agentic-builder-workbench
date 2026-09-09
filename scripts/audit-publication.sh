@@ -7,6 +7,7 @@ cd "$repo_root"
 failed=0
 rg_excludes=(
   --glob '!**/.git/**'
+  --glob '!**/.terraform/**'
   --glob '!**/.venv/**'
   --glob '!**/venv/**'
   --glob '!**/node_modules/**'
@@ -52,10 +53,10 @@ if (( brain_bytes > 32768 )); then
   fail "full personal AGENTS.md exceeds the default 32 KiB Codex project-instruction budget: ${brain_bytes} bytes"
 fi
 
-unexpected_env="$(find . -type d \( -name '.git' -o -name '.venv' -o -name 'venv' -o -name 'node_modules' -o -name 'build' -o -name 'dist' -o -name '__pycache__' \) -prune -o -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -print)"
+unexpected_env="$(find . -type d \( -name '.git' -o -name '.terraform' -o -name '.venv' -o -name 'venv' -o -name 'node_modules' -o -name 'build' -o -name 'dist' -o -name '__pycache__' \) -prune -o -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -print)"
 [[ -z "$unexpected_env" ]] || fail "unexpected environment file(s): $(printf '%s' "$unexpected_env" | tr '\n' ' ')"
 
-sensitive_files="$(find . -type d \( -name '.git' -o -name '.venv' -o -name 'venv' -o -name 'node_modules' -o -name 'build' -o -name 'dist' -o -name '__pycache__' \) -prune -o -type f \( -name '*.pem' -o -name '*.key' -o -name '*.p12' -o -name '*.pfx' -o -name '*.keystore' -o -name '*.jks' -o -name '*.sqlite' -o -name '*.sqlite3' -o -name '*.db' \) -print)"
+sensitive_files="$(find . -type d \( -name '.git' -o -name '.terraform' -o -name '.venv' -o -name 'venv' -o -name 'node_modules' -o -name 'build' -o -name 'dist' -o -name '__pycache__' \) -prune -o -type f \( -name '*.pem' -o -name '*.key' -o -name '*.p12' -o -name '*.pfx' -o -name '*.keystore' -o -name '*.jks' -o -name '*.sqlite' -o -name '*.sqlite3' -o -name '*.db' \) -print)"
 [[ -z "$sensitive_files" ]] || fail "sensitive-looking file(s): $(printf '%s' "$sensitive_files" | tr '\n' ' ')"
 
 # Private-key material is checked by check-private-paths.py, including source;

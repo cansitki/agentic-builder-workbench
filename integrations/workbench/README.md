@@ -11,7 +11,7 @@ Official OpenAI documentation describes encrypted secrets for Codex cloud enviro
 ## Components
 
 - `tools/secenv/`: workspace-side broker, encryption key, validation, and owner-only install.
-- Workbench 3.0.0, plugin ID `workbench`: native modal, encryption, terminal and workspace UI. Source and provenance: [SOURCE.md](SOURCE.md).
+- Workbench 3.0.1, plugin ID `workbench`: native modal, encryption, terminal and workspace UI. Source and provenance: [SOURCE.md](SOURCE.md).
 - `.agents/skills/secure-credential-intake/`: agent procedure and fail-closed policy.
 - `AGENTS.md` and `templates/personal/AGENTS.md`: non-bypassable rule that rejects every other intake channel.
 
@@ -68,6 +68,6 @@ If `secenv`, Workbench, its listener, or the native modal is unavailable, stop c
 - This bridge targets local or persistent Local/Coder/SSH workspaces. It is not wired into ephemeral Codex cloud containers.
 - The workspace-side process decrypts the value in memory to install it.
 - A coding agent running as the same OS user may be able to read the installed file if its sandbox/permissions allow it. Use resource-scoped credentials and stronger OS/service separation for high-value production access.
-- Workbench v3.0.0 is desktop-only. Mobile Obsidian is not a secure-input surface.
-- v3.0.0 does not mask `textarea`; the bundled `secenv` rejects secret-looking field names assigned to visible `text/textarea`. Multiline secrets require a future reviewed masked/file-input extension, not a fallback channel.
+- Workbench v3.0.1 is desktop-only. Mobile Obsidian is not a secure-input surface.
+- v3.0.1 does not mask `textarea`; the bundled `secenv` rejects secret-looking field names assigned to visible `text/textarea`. Multiline secrets require a future reviewed masked/file-input extension, not a fallback channel.
 - The installer is fail-closed and does not overwrite an existing plugin installation.

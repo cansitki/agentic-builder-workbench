@@ -8,7 +8,7 @@ Maintain this repository as a generic, private starter kit. It must teach transf
 
 Before changing the repository:
 
-1. Read `README.md`.
+1. Read `README.md`. For a full install/setup request, route immediately to `AGENT-SETUP.md` and the `workbench-bootstrap` skill; execute the authorized setup instead of stopping at a tour.
 2. For system-tour/adoption work, read `TOUR.md`, `CAPABILITIES.md`, `FAQ.md`, `ONBOARDING.md`, `INSTALL.md`, and the full `templates/personal/AGENTS.md`.
 3. Read the closest relevant document under `docs/`.
 4. Inspect the current diff and preserve unrelated user changes.

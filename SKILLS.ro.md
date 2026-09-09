@@ -7,6 +7,7 @@ disc nu garantează că agentul activ îl expune; verifică lista agentului.
 
 | Skill | Utilizare |
 |---|---|
+| workbench-bootstrap | Instalează mediul complet: PC, VPS, Coder, Tunnel, autentificări și vault |
 | workbench-onboarding | Turul sistemului și configurarea propriului setup |
 | project-kickoff | Din idee în brief, plan și prima felie verificabilă |
 | secure-credential-intake | Orice credential furnizat agentului; numai modal nativ |
@@ -55,7 +56,7 @@ Security este referință inclusă, nu un skill executabil.
 
 ## Recepție
 
-Agentul trebuie să vadă și să poată invoca cele opt skill-uri incluse.
+Agentul trebuie să vadă și să poată invoca cele nouă skill-uri incluse.
 `node scripts/check-skills.mjs` trebuie să treacă. Extensiile alese trebuie să
 apară în catalogul activ, cu toate referințele și uneltele lor disponibile.
 Vezi [START-HERE.ro.md](START-HERE.ro.md) și [PARITY.ro.md](PARITY.ro.md).

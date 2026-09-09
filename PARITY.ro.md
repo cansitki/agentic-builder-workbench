@@ -10,8 +10,8 @@ Această recepție aparține proiectului de transfer; nu înlocuiește TODO-ul g
 | Repo | `bash scripts/verify-all.sh` | De rulat pe destinație |
 | Plugin | Hashuri, build, activare în Obsidian | Fork 3.0.0; formulare native testate local, destinație netestată |
 | Brain | Placeholders completate, check-adopted-brain trece | Template inclus |
-| Skill-uri | Opt skill-uri invocate; extensii alese | Nucleu inclus; extensii de configurat |
-| Vault | Citire CLI index/TODO; daily path corect | Template inclus; CLI destinație de verificat |
+| Skill-uri | Nouă skill-uri invocate; extensii alese | Nucleu inclus; extensii de configurat |
+| Vault | Citire CLI index/TODO; daily path corect | Template și workbench-vault incluse; destinație de verificat |
 | Daily | Scriere dummy, Links Inbox ultimul, timezone | Netestat pe destinație |
 | Terminal | Folder corect, disconnect/reconnect, output | Netestat pe destinație |
 | Work/system | Proiecte vizibile, sys-* ascunse | Netestat pe destinație |
@@ -20,7 +20,7 @@ Această recepție aparține proiectului de transfer; nu înlocuiește TODO-ul g
 | Proiect pilot | Bootstrap nou, editare, test și commit | Netestat pe destinație |
 | Sync | Notă dummy sincronizată între dispozitive | Necesită cont și topologie proprii |
 | Backup | Backup și restore izolat cu hash identic | Necesită storage propriu |
-| Servicii | Health și restart după reboot | Definiții production identice neincluse |
+| Servicii | Health și restart după reboot | Compose/Coder/Tunnel/Sync incluse; instanța destinatarului de verificat |
 | Toad | Nume exact și rol confirmat | Neclarificat |
 | Volta | Nume exact și rol confirmat | Neclarificat |
 
@@ -39,3 +39,11 @@ Pentru fiecare probă înregistrează în proiectul privat al destinatarului: da
 OS, versiune, commit, comandă/acțiune, rezultat observat și blocaj. Transferul
 este recepționat numai când probele necesare au dovezi; rândurile neaplicabile
 primesc explicație, nu un succes automat.
+
+## Bootstrap de la PC
+
+Artefactele și fluxul executabil sunt în [AGENT-SETUP.md](AGENT-SETUP.md).
+În plus față de probele de mai sus, recepția cere primul owner creat privat înainte
+de DNS, autentificare HTTPS, SSH în ambele workspace-uri, persistență stop/start,
+Sync în ambele direcții și reluarea serviciului după restart. CI izolat nu înlocuiește
+verificarea zonei Cloudflare, a contului Obsidian sau a backupului destinatarului.

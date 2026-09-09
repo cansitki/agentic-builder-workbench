@@ -1,0 +1,17 @@
+.git
+**/.git
+**/.terraform
+**/node_modules
+.venv
+venv
+**/__pycache__
+**/*.pyc
+**/*.env
+.env*
+**/*.pem
+**/*.key
+.workbench-setup
+**/*.log
+**/auth.json
+**/secrets.enc
+**/.obsidian

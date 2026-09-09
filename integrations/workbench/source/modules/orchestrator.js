@@ -1799,9 +1799,9 @@ class WorkbenchSettingTab extends PluginSettingTab {
       .setDesc('Uses the connection identifier. Finish or cancel pending requests before switching.')
       .addDropdown(dropdown => {
         dropdown.addOption('', 'Select a workspace');
-        const workspaces = this.plugin._getGsdWorkspaces(module._gsdSettings());
+        const workspaces = module._credentialWorkspaces();
         for (const workspace of workspaces) {
-          if (workspace.coderName) dropdown.addOption(workspace.coderName, workspace.displayName || workspace.coderName);
+          if (workspace.coderName) dropdown.addOption(workspace.coderName, (workspace.displayName || workspace.coderName) + (workspace.hidden || workspace.coderName === 'system' ? ' (background)' : ''));
         }
         if (module.settings.workspace && !workspaces.some(w => w.coderName === module.settings.workspace)) {
           dropdown.addOption(module.settings.workspace, 'Unavailable: ' + module.settings.workspace);

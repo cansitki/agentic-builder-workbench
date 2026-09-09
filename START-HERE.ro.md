@@ -1,11 +1,13 @@
 # Workbench — lista completă și ordinea de pornire
 
+**Pentru instalare de la zero, dă lui Codex [promptul de început](GET-STARTED.ro.md).** Fluxul executabil complet este în [AGENT-SETUP.md](AGENT-SETUP.md).
+
 Acesta este pachetul de transfer al sistemului de lucru. Include pluginul Obsidian
 cu sursa și bundle-ul folosit la audit, runtime-ul `secenv`, brainul, structura
 vaultului, structura proiectelor, procedurile și probele de verificare.
 
 Data inventarului: **9 septembrie 2026, Europe/Bucharest**.
-Versiunea 3.0.0 este derivata portabilă Workbench: fără username sau workspace-uri
+Versiunea 3.0.1 este derivata portabilă Workbench: fără username sau workspace-uri
 precompletate. Hashurile descriu această versiune, nu instalarea veche. Calculatorul
 destinatarului nu a fost încă testat. Vezi [rolul fiecărei componente](COMPONENTS.ro.md).
 
@@ -30,7 +32,7 @@ backupul sau autentificările proprii. Pentru fluxul Local nu este necesar un VP
 | Componentă | Rol | Obligatoriu / condiționat | Ce există în repo |
 |---|---|---|---|
 | Obsidian Desktop | Vault și interfață nativă | Obligatoriu pentru secure intake | Template vault și ghid |
-| Workbench 3.0.0 | Terminal, fișiere, workspace, input | Obligatoriu | Sursă, bundle, hashuri, installer offline |
+| Workbench 3.0.1 | Terminal, fișiere, workspace, input | Obligatoriu | Sursă, bundle, hashuri, installer offline |
 | Codex | Agentul de coding | Obligatoriu pentru varianta Codex | Config exemplu și instrucțiuni |
 | Git | Versiuni și recuperare | Obligatoriu | Repo, checks și workflow |
 | GitHub / gh | Remote și review | GitHub pentru acest repo; `gh` pentru administrare | Proceduri; cont propriu |
@@ -83,8 +85,8 @@ Lista completă, proveniența, utilizarea și statutul de transfer sunt în
 `.agents/skills/`: `workbench-onboarding`, `project-kickoff`,
 `secure-credential-intake`, `secure-release`, `vault-reconcile`.
 
-Design-taste-frontend, copywriting și write-articles sunt de asemenea incluse: opt
-skill-uri în total. Cele pentru imagini, documentație, research și managementul
+Design-taste-frontend, copywriting și write-articles sunt de asemenea incluse: nouă
+skill-uri în total, inclusiv workbench-bootstrap. Cele pentru imagini, documentație, research și managementul
 pluginurilor sunt extensii furnizate de aplicația agentului. Nu sunt pluginuri Obsidian.
 Biblioteca Vibecoding Security este material de referință, nu un skill executabil.
 
@@ -140,7 +142,7 @@ metadata obligatorie per credential și teste de criptare/instalare.
 
 Această completare pune efectiv sursa pluginului în același repo, permite
 instalarea pluginului fără download de release și adaugă inventarul operatorului
-și o recepție de paritate. Versiunea 3.0.0 redenumește pluginul și corectează defaulturile personale.
+și o recepție de paritate. Versiunea 3.0.1 redenumește pluginul și corectează defaulturile personale.
 Acesta este un rezumat al deciziilor de transfer;
 conversațiile și daily notes private nu sunt distribuite colaboratorilor.
 

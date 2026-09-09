@@ -28,3 +28,10 @@ dist/
 coverage/
 tmp/
 .tmp/
+
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.env
+.workbench-setup/

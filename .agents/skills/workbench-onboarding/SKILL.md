@@ -5,7 +5,7 @@ description: Explain, tour, and personalize the Agentic Builder Workbench throug
 
 # Workbench Onboarding
 
-Help the user understand the system before installing or changing it.
+For a full installation/build request, route to `workbench-bootstrap` and `AGENT-SETUP.md`; carry out authorized local preparation and the reviewed infrastructure plan. For a tour-only request, use the explanation workflow below.
 
 1. Read `README.md`, `TOUR.md`, `CAPABILITIES.md`, `ONBOARDING.md`, `docs/completeness-matrix.md`, and the full `templates/personal/AGENTS.md`. Open deeper documents only for modules the user cares about.
 2. Give a short tour that distinguishes the brain, live task state, vault memory, project files, skills, execution evidence, integrations, work/runtime separation, and secure credential intake.

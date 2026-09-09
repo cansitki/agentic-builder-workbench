@@ -1,0 +1,14 @@
+{
+  "hostname": "coder.example.com",
+  "ssh_target": "my-vps",
+  "server_hostname": "my-vps",
+  "cloudflare_account_id": "REPLACE_WITH_ACCOUNT_ID",
+  "cloudflare_account_name": "My Cloudflare account",
+  "cloudflare_zone_id": "REPLACE_WITH_ZONE_ID",
+  "cloudflare_zone_name": "example.com",
+  "coder_username": "choose-your-username",
+  "coder_email": "you@example.com",
+  "display_name": "Your Name",
+  "timezone": "Europe/Bucharest",
+  "local_forward_port": 17080
+}

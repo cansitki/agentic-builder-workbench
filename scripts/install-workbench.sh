@@ -55,11 +55,11 @@ checksum() {
   fi
 }
 
-[[ "$(checksum "$temp_path/main.js")" == "e2288ae4fb7690f6c0c2b6a711760c12148e7386515176aa12ded23f94fc298b" ]] || {
+[[ "$(checksum "$temp_path/main.js")" == "2de5220b6ee92f7d002424b96931b6caeacf4f441475bca9340132857787f819" ]] || {
   printf 'Workbench main.js checksum mismatch.\n' >&2
   exit 1
 }
-[[ "$(checksum "$temp_path/manifest.json")" == "1fb2507bc71037d5c5dbc91f1604755560e6d60eb93ad7a8d5a28b6f1350068f" ]] || {
+[[ "$(checksum "$temp_path/manifest.json")" == "dc8843a857c0bcbc560993bb63262b8a6a07dafd2a72852d5f5734b0aa279590" ]] || {
   printf 'Workbench manifest.json checksum mismatch.\n' >&2
   exit 1
 }
@@ -75,5 +75,5 @@ install -m 0644 "$temp_path/manifest.json" "$staged_plugin/manifest.json"
 install -m 0644 "$temp_path/styles.css" "$staged_plugin/styles.css"
 mv "$staged_plugin" "$plugin_path"
 
-printf 'Installed verified Workbench v3.0.0 assets at %s\n' "$plugin_path"
+printf 'Installed verified Workbench v3.0.1 assets at %s\n' "$plugin_path"
 printf 'Open Obsidian, enable Workbench, configure your own Local/Coder/SSH workspace, then restart the secure-input listener.\n'

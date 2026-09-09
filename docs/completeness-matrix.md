@@ -49,7 +49,7 @@ The goal is structural and operational fidelity without copying private facts. E
 | Testing and review | test/review guide + secure release skill | Guide + skill | Included |
 | Incident handling | incident guide/template | Guide + template | Included |
 | Excalidraw geometry/visual QA | visual notes guide + full brain | Rule | Included |
-| Skills | `.agents/skills/` | Eight validated skills | Included |
+| Skills | `.agents/skills/` | Nine validated skills | Included |
 | Hooks/CI/automations | automation guide/template + CI | Guide + executable check | Included |
 | MCP/connectors | connector review template | Template | Included |
 | Web architecture | web blueprint | Guide | Included |
@@ -79,3 +79,13 @@ The goal is structural and operational fidelity without copying private facts. E
 - Active production authorization or standing delegation.
 
 Those exclusions preserve the method while preventing the transfer from becoming a copy of another person's operational identity or access.
+
+## Executable full-stack bootstrap
+
+`AGENT-SETUP.md` and `workbench-bootstrap` now route full-install requests into
+local setup, generated secure schemas, VPS Docker/Coder, first-owner authentication,
+Cloudflare Tunnel/DNS, workspace creation, SSH configuration, encrypted-vault setup
+and a durable sync service. See `infra/` and `tools/obsidian-sync/`.
+
+These are executable artifacts, not a claim that a recipient's paid resources
+or credentials have already been installed. Target acceptance remains separate.
